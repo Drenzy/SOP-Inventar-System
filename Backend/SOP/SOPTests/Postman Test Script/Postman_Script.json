@@ -1,0 +1,1153 @@
+{
+	"info": {
+		"_postman_id": "4d85fb1e-946a-4e6e-ad65-2ae76f10439a",
+		"name": "SOP-Inventar-API Postman Test",
+		"description": "Ordered full test suite for SOP-Inventar-API based on DbContext definition.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25984928"
+	},
+	"item": [
+		{
+			"name": "Get all addresses",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Address",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Address"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all buildings",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Building",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Building"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all items",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Item",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Item"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all item groups",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/ItemGroup",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"ItemGroup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all item types",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/ItemType",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"ItemType"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all loans",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Loan",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Loan"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all requests",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Request",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Request"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all roles",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Role",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Role"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all rooms",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Room",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Room"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all statuses",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Status",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all status history",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/StatusHistory",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"StatusHistory"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all users",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/User",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"User"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Address by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Address/2650",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Address",
+						"2650"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Building by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Building/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Building",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Item by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Item/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Item",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get ItemGroup by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/ItemGroup/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"ItemGroup",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get ItemType by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/ItemType/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"ItemType",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Loan by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Loan/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Loan",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Request by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Request/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Request",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Role by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Role/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Role",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Room by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Room/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Room",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Status by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Status/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Status",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get StatusHistory by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/StatusHistory/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"StatusHistory",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/User/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"User",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all Archive_Item",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Archive_Item",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Archive_Item"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Archive_Item by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Archive_Item/33",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Archive_Item",
+						"33"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all Archive_ItemGroup",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Archive_ItemGroup",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Archive_ItemGroup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Archive_ItemGroup by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Archive_ItemGroup/7",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Archive_ItemGroup",
+						"7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all Archive_ItemType",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Archive_ItemType",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Archive_ItemType"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Archive_ItemType by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Archive_ItemType/6",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Archive_ItemType",
+						"6"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all Archive_Loan",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Archive_Loan",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Archive_Loan"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Archive_Loan by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Archive_Loan/11",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Archive_Loan",
+						"11"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all Archive_Request",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Archive_Request",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Archive_Request"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Archive_Request by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Archive_Request/17",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Archive_Request",
+						"17"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all Archive_User",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Archive_User",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Archive_User"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Archive_User by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/Archive_User/12",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"Archive_User",
+						"12"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{authToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "YOUR_API_URL_HERE",
+			"type": "string"
+		},
+		{
+			"key": "authToken",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6IjMiLCJuYmYiOjE3NDYwOTU2NjUsImV4cCI6MTc0NjcwMDQ2NSwiaWF0IjoxNzQ2MDk1NjY1fQ.Jd9YDP4cd9wePlB0OZtGlcHQbr94_tX8_mJfudcrUak",
+			"type": "string"
+		}
+	]
+}

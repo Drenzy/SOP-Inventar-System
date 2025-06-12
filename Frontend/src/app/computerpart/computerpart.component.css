@@ -1,0 +1,16 @@
+td {
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .grid-item {
+    height: 70px; /* Adjust height for smaller screens */
+    width: 70px; /* Adjust width for smaller screens */
+  }
+
+  .table th,
+  .table td {
+    font-size: 12px; /* Reduce font size for smaller screens */
+    padding: 2px; /* Compact cell padding */
+  }
+}

@@ -1,0 +1,49 @@
+<app-navbar></app-navbar>
+
+<h2>Genstands gruppe Arkiv</h2>
+<p>Liste af Genstands grupper</p>
+
+<button class="btn btn-primary" [routerLink]="['/archive-menu']">
+  Gå Tilbage
+</button>
+
+<div class="form-group">
+  <label for="searchArchiveItemGroup">Søg gruppe:</label>
+  <input type="text" class="form-control" id="searchArchiveItemGroup" [(ngModel)]="searchArchivedItemGroupTerm"
+    (input)="filterArchiveItemGroups()" placeholder="Søg efter Modelnavn eller Fabrikant" />
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Dato for sletning</th>
+      <th>Genstandstype</th>
+      <th>Modelnavn</th>
+      <th>Antal</th>
+      <th>Pris</th>
+      <th>Fabrikant</th>
+      <th>Garanti</th>
+      <th>Note</th>
+      <th>Handling</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let archiveItemGroup of filteredArchivedItemGroups">
+      <th>{{ archiveItemGroup.deleteTime | date : "dd/MM/yyyy" }}</th>
+      <td>{{ getItemTypeName(archiveItemGroup.itemTypeId) }}</td>
+      <td>{{ archiveItemGroup.modelName }}</td>
+      <td>{{ archiveItemGroup.quantity }}</td>
+      <td>{{ archiveItemGroup.price }}</td>
+      <td>{{ archiveItemGroup.manufacturer }}</td>
+      <td>{{ archiveItemGroup.warrantyPeriod }}</td>
+      <td> {{archiveItemGroup.archiveNote}}</td>
+      <td>
+        <button class="btn btn-primary" (click)="restoreItemGroup(archiveItemGroup.id)">
+          Gendan
+        </button>
+        <button class="btn btn-danger" (click)="confirmDelete(archiveItemGroup.id)">
+          Slet
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>

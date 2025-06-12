@@ -1,0 +1,33 @@
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.col-md-6 {
+  flex: 1;
+  min-width: 300px;
+  box-sizing: border-box;
+}
+
+.table {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.btn {
+  margin-right: 10px;
+}
+
+h2 {
+  margin-bottom: 20px;
+}
+
+.modal-body,
+.modal-title {
+  color: black;
+}

@@ -1,0 +1,227 @@
+<app-navbar></app-navbar>
+
+<div class="container mt-4">
+  <h2>Inventar</h2>
+
+  <!-- This div is for all the content on the page. -->
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-2">
+        <div class="card">
+          <!-- This part is for the filter area of the page. -->
+          <div class="card-body">
+            <h5 class="card-title">Filtre</h5>
+            <div>
+              <button id="refreshBtn" class="btn btn-primary" style="box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2)"
+                (click)="refreshFilter()">
+                Genindlæs
+              </button>
+            </div>
+            <div class="grid-items" *ngFor="let itemType of itemTypes">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" [value]="itemType.id"
+                  [checked]="selectedItemTypes[itemType.id] || false" (change)="onChecked(itemType.id, $event)" />
+                <label>{{ itemType.typeName }}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="card">
+          <!-- This part is for the add item button and for the 1st searchbar. -->
+          <div class="inventartitle">
+            <button type="button" class="btn btn-success" style="box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2)"
+              (click)="openNewItemModal()">
+              Ny Genstand
+            </button>
+          </div>
+          <div class="form-group">
+            <h1 for="searchRoom" style="text-align: center">Søg Grupper:</h1>
+            <input type="text" class="form-control" id="searchRoom" [(ngModel)]="searchItemGroup"
+              (input)="updateDisplayedItems()" placeholder="Søg Grupper" />
+          </div>
+
+          <!-- This part is for the item groups. -->
+          <div class="card-body-items">
+            <div class="grid-container">
+              <div class="grid-item" *ngFor="let selectedItemGroup of selectedItemGroups">
+                <div id="textSize" class="model-name" (click)="onItemGroupClick(selectedItemGroup, $event)">
+                  {{ selectedItemGroup.modelName }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- This part is for the items in the item groups. -->
+          <div id="item-list" *ngIf="isVisible">
+            <button class="btn btn-primary" (click)="IsVisible()">
+              Gå Tilbage
+            </button>
+            <h4><b>Genstand:</b></h4>
+            <div class="form-group">
+              <h1 for="searchRoom" style="text-align: center"></h1>
+              <input type="text" class="form-control" id="searchRoom" [(ngModel)]="searchItem" (input)="onItemSearch()"
+                placeholder="Søg Genstand" />
+            </div>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Serienummer</th>
+                    <th>Genstandsgruppe</th>
+                    <th>Adresse</th>
+                    <th>Bygning</th>
+                    <th>Lokale</th>
+                    <th *ngIf="currentUser?.role?.id === 1 || currentUser?.role?.id === 4">Arkiver</th>
+                    <th>Rediger</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of filteredItems" (click)="onLineClick(item, $event)">
+                    <td (click)="onLineClick(item, $event)">
+                      {{ item.serialNumber }}
+                    </td>
+                    <td (click)="onLineClick(item, $event)">
+                      {{ item.itemGroup?.modelName }}
+                    </td>
+                    <td (click)="onLineClick(item, $event)">
+                      {{ getAddressInfo(item.roomId) }}
+                    </td>
+                    <td (click)="onLineClick(item, $event)">
+                      {{ getBuildingInfo(item.roomId) }}
+                    </td>
+                    <td (click)="onLineClick(item, $event)">
+                      {{ getRoomNumber(item.roomId) }}
+                    </td>
+                    <td *ngIf="currentUser?.role?.id === 1 || currentUser?.role?.id === 4">
+                      <!--the span ? if true and : if false-->
+                      <span [title]="isDeleteDisabled(item.id) ? 'Denne genstand er lånt ud' : ''">
+                        <button type="button" class="btn btn-danger" [disabled]="isDeleteDisabled(item.id)"
+                          (click)="openArchiveModal(item); $event.stopPropagation()">
+                          Arkiver
+                        </button>
+                      </span>
+
+                    </td>
+                    <td>
+                      <button class="btn btn-primary btn-sm" (click)="
+                          openEditItemModal(item); $event.stopPropagation()
+                        ">
+                        Rediger
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- New Item Modal -->
+<div class="modal" *ngIf="showModal">
+  <div class="modal-content">
+    <span class="close" (click)="closeNewItemModal()">&times;</span>
+    <h2>Ny Genstand</h2>
+    <form (ngSubmit)="createNewItem()">
+      <div class="form-group">
+        <label for="roomId">Lokale</label>
+        <select class="form-control" id="user" [(ngModel)]="newItem.roomId" name="user" required>
+          <option *ngFor="let room of rooms" [value]="room.id">
+            {{ room.roomNumber }} ,
+            {{ room.building?.buildingAddress?.road || "No Road Info" }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="itemGroupId">Genstandsgruppe</label>
+        <select class="form-control" id="user" [(ngModel)]="newItem.itemGroupId" name="user" required>
+          <option *ngFor="let itemGroup of itemGroups" [value]="itemGroup.id">
+            {{ itemGroup.modelName }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="serialNumber">Serienummer</label>
+        <input type="text" class="form-control" id="serialNumber" [(ngModel)]="newItem.serialNumber"
+          name="serialNumber" />
+      </div>
+      <button type="submit" class="btn btn-success">Opret</button>
+      <button type="button" class="btn btn-secondary" (click)="closeNewItemModal()">
+        Cancel
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Item Modal -->
+<div class="modal" *ngIf="showEditModal">
+  <div class="modal-content">
+    <span class="close" (click)="closeEditItemModal()">&times;</span>
+    <h2>Rediger Genstand</h2>
+    <form (ngSubmit)="editItem()">
+      <div class="form-group">
+        <label for="editItemGroupId">Gendstandsgruppe</label>
+        <select class="form-control" id="editItemGroupId" [(ngModel)]="selectedItem.itemGroupId" name="editItemGroupId"
+          required>
+          <option *ngFor="let itemGroup of itemGroups" [value]="itemGroup.id">
+            {{ itemGroup.modelName }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="editRoomId">Lokale</label>
+        <select class="form-control" id="editRoomId" [(ngModel)]="selectedItem.roomId" name="editRoomId" required>
+          <option *ngFor="let room of rooms" [value]="room.id">
+            {{ room.roomNumber }} ,
+            {{ room.building?.buildingAddress?.road || "No Road Info" }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="editSerialNumber">Serienummer</label>
+        <input type="text" class="form-control" id="editSerialNumber" [(ngModel)]="selectedItem.serialNumber"
+          name="editSerialNumber" />
+      </div>
+      <button type="submit" class="btn btn-primary">Gem</button>
+      <button type="button" class="btn btn-secondary" (click)="closeEditItemModal()">
+        Cancel
+      </button>
+    </form>
+  </div>
+</div>
+
+<!--MODEL FOR ARCHIVE ITEM-->
+<div class="modal" *ngIf="showArchiveModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Arkiver Genstand</h5>
+        <button type="button" class="close" aria-label="Close" (click)="closeArchiveModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="ar">Skriv note:</label>
+          <input type="text" class="form-control" id="archiveNote" name="archiveNote" [(ngModel)]="archiveNote"
+            placeholder="Skriv note om hvorfor" />
+
+          <div class="text-danger" *ngIf="showErrorNote">Note er påkrævet.</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeArchiveModal()">
+          Annuller
+        </button>
+        <button type="button" class="btn btn-danger" (click)="confirmArchiveItem()">
+          Arkiver
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

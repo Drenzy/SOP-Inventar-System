@@ -1,0 +1,88 @@
+.container {
+  max-width: 85%;
+}
+
+.card {
+  margin-bottom: 20px;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.table {
+  width: 100%;
+}
+
+.click {
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
+}
+
+.click:hover {
+  color: darkblue;
+}
+
+#requestBtn{
+  float: right;
+}
+
+.model-name {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%; 
+  width: 100%; 
+
+}
+
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: black;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  width: 80%;
+  max-width: 500px;
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .form-group {
+    overflow-x: auto; 
+  }
+
+  .table {
+    width: 100%; 
+    max-width: 100%; 
+    font-size: 14px; 
+    word-wrap: break-word; 
+    border-collapse: collapse; 
+  }
+
+  th, td {
+    white-space: nowrap; 
+    padding: 0.5rem; 
+    text-align: left; 
+  }
+}

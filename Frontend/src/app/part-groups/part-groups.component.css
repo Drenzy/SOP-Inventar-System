@@ -1,0 +1,61 @@
+.clickable-row {
+  cursor: pointer;
+}
+
+.clickable-row:hover {
+  background-color: #f5f5f5;
+}
+
+.modal-dialog {
+  color: black;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two equal columns */
+  gap: 4rem; /* Increase space between columns */
+  margin-top: 2rem; /* Add top margin for additional spacing */
+}
+
+.table-container {
+  min-width: 300px; /* Adjust the value as needed */
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px; /* Adjust the value as needed */
+  margin-left: 10rem; /* Move the form more to the right */
+}
+
+@media (max-width: 1400px) {
+  .container {
+    grid-template-columns: 1fr; /* Single column */
+  }
+
+  .form-container {
+    margin-left: 0; /* Align to the left */
+    margin-top: 2rem; /* Add spacing between the table and form */
+  }
+}
+
+@media (max-width: 800px) {
+  .table-container {
+    overflow-x: auto; /* Enables horizontal scrolling */
+    width: 100%; /* Ensures the table container fits within the viewport */
+  }
+
+  .table {
+    width: 600px; /* Fixes the table width to a manageable size for scrolling */
+  }
+
+  .table-container::-webkit-scrollbar {
+    height: 20px; /* Adjust scrollbar height for better aesthetics */
+  }
+
+  .table-container::-webkit-scrollbar-thumb {
+    background-color: #ccc; /* Scrollbar thumb color */
+    border-radius: 4px; /* Rounded scrollbar corners */
+  }
+}
+

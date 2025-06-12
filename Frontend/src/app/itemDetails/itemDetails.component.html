@@ -1,0 +1,203 @@
+<app-navbar></app-navbar>
+<div id="show-item" *ngIf="item">
+  <button class="btn btn-success floatingbtn" (click)="makeQRCode()">
+    Generer QR kode
+  </button>
+  <button class="btn btn-success floatingbtn" (click)="openStatusModal()">
+    Tilføj ny status
+  </button>
+  <button class="btn btn-primary floatingbtn" (click)="openEditModal(this.item)">
+    Rediger genstand
+  </button>
+
+  <h1>Genstand</h1>
+
+  <!-- This part shows the item information -->
+  <div class="item-basic-info">
+    <p>Serienummer: {{ item.serialNumber }}</p>
+    <p *ngIf="itemType">
+      Genstandstype: {{ itemType.typeName }}
+    </p>
+  </div>
+
+  <!-- This part shows the current/latest status of the item -->
+  <div *ngIf="currentStatusHistory" class="status-section">
+    <h2>
+      Nuværende status
+      <hr />
+    </h2>
+    <p>Status: {{ getStatusName(currentStatusHistory) }}</p>
+    <p>Note: {{ currentStatusHistory.note }}</p>
+  </div>
+
+  <!-- This part shows item group for the item -->
+  <div *ngIf="item.itemGroup" class="item-group-section">
+    <div (click)="toggleItemGroup()" class="toggleCollapse">
+      <h2>
+        Genstandsgruppe
+        <span *ngIf="!collapsedItemGroup" style="font-size: 20px">&#x25B2;</span>
+        <span *ngIf="collapsedItemGroup" style="font-size: 20px">&#x25BC;</span>
+        <hr />
+      </h2>
+    </div>
+    <div *ngIf="!collapsedItemGroup" class="collapsible-content">
+      <p>Modelnavn: {{ item.itemGroup.modelName }}</p>
+      <p>Fabrikant:{{ item.itemGroup.manufacturer }}</p>
+      <p>Pris: {{ item.itemGroup.price }} dkk</p>
+      <p>
+        Garantiperiode: {{ item.itemGroup.warrantyPeriod }}
+      </p>
+      <p>Antal: {{ item.itemGroup.quantity }}</p>
+    </div>
+  </div>
+
+  <!-- This part shows room/locale the item is in -->
+  <div *ngIf="item.room" class="location-section">
+    <h2>
+      Lokation
+      <hr />
+    </h2>
+    <p>Lokale: {{ item.room.roomNumber }}</p>
+    <div *ngIf="item.room.building">
+      <p>Bygning: {{ item.room.building.buildingName }}</p>
+      <div *ngIf="item.room.building.buildingAddress">
+        <p>
+          Adresse:
+          {{ item.room.building.buildingAddress.road }},
+          {{ item.room.building.buildingAddress.zipCode }}
+          {{ item.room.building.buildingAddress.city }}
+        </p>
+        <p>
+          Region:
+          {{ item.room.building.buildingAddress.region }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- This part shows the loan if the item is loaned out -->
+  <div *ngIf="item.loan" class="loan-section">
+    <h2>
+      Udlån
+      <hr />
+    </h2>
+    <p>
+      Låne dato: {{ item.loan.loanDate | date : "dd/MM/yyyy" }}
+    </p>
+    <p>
+      Forventet retur dato:
+      {{ item.loan.returnDate | date : "dd/MM/yyyy" }}
+    </p>
+    <div *ngIf="user">
+      <h4>Lånt af</h4>
+      <p>Navn: {{ user.name }}</p>
+      <p>Email: {{ user.email }}</p>
+    </div>
+  </div>
+
+  <!-- Status Histories List -->
+  <div (click)="toggleStatusHistories()" class="toggleCollapse">
+    <h2>
+      Statushistorik
+      <span *ngIf="!collapsedStatusHistories" style="font-size: 20px">&#x25B2;</span>
+      <span *ngIf="collapsedStatusHistories" style="font-size: 20px">&#x25BC;</span>
+      <hr />
+    </h2>
+  </div>
+  <div *ngIf="!collapsedStatusHistories" class="collapsible-content">
+    <li *ngFor="let statusHistory of item.statusHistories" class="history-item">
+      <h4>Status</h4>
+      <hr />
+      <p>Status: {{ getStatusName(statusHistory) }}</p>
+      <p>
+        Dato:
+        {{ statusHistory.statusUpdateDate | date : "dd/MM/yyyy" }}
+      </p>
+      <p>Note: {{ statusHistory.note }}</p>
+    </li>
+  </div>
+</div>
+
+<!-- Edit Item Modal -->
+<div class="modal" *ngIf="showEditModal">
+  <div class="modal-content">
+    <span class="close" (click)="closeEditModal()">&times;</span>
+    <h2>Rediger genstand</h2>
+    <form (ngSubmit)="editItem()">
+      <div class="form-group">
+        <label for="editItemGroupId">Genstandsgruppe</label>
+        <select class="form-control" id="editItemGroupId" [(ngModel)]="selectedItem.itemGroupId" name="editItemGroupId"
+          required>
+          <option *ngFor="let itemGroup of itemGroups" [value]="itemGroup.id">
+            {{ itemGroup.modelName }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="editRoomId">Lokale</label>
+        <select class="form-control" id="editRoomId" [(ngModel)]="selectedItem.roomId" name="editRoomId" required>
+          <option *ngFor="let room of rooms" [value]="room.id">
+            {{ room.roomNumber }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="editSerialNumber">Serienummer</label>
+        <input type="text" class="form-control" id="editSerialNumber" [(ngModel)]="selectedItem.serialNumber"
+          name="editSerialNumber" />
+      </div>
+      <button type="submit" class="btn btn-primary">Gem ændringer</button>
+      <button type="button" class="btn btn-secondary" (click)="closeEditModal()">
+        Annuller
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Status Modal -->
+<div class="modal" *ngIf="showStatusModal">
+  <div class="modal-content">
+    <span class="close" (click)="closeStatusModal()">&times;</span>
+    <h2>Tilføj ny status</h2>
+    <form (ngSubmit)="createStatusHistory()">
+      <div class="form-group">
+        <label for="status">Status</label>
+        <select class="form-control" id="status" [(ngModel)]="newStatusHistory.statusId" name="status" required>
+          <option *ngFor="let status of statuses" [value]="status.id">
+            {{ status.name }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="note">Note</label>
+        <input type="text" class="form-control" id="note" [(ngModel)]="newStatusHistory.note" name="note" required />
+      </div>
+      <button type="submit" class="btn btn-primary">Tilføj</button>
+      <button type="button" class="btn btn-secondary" (click)="cancelStatus()">
+        Annuller
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- QR code Modal -->
+<div class="modal" *ngIf="showQRCodeModal">
+  <div class="modal-content">
+    <h2>QR kode</h2>
+    <div *ngIf="qrCodeStyle" style="margin-top: 20px">
+      <img [src]="qrCodeUrl" alt="QR Code" style="
+          width: 300px;
+          height: 300px;
+          border: 1px solid #000;
+          display: block;
+          margin: 0 auto;
+        " />
+      <button class="btn btn-success qrbtn" (click)="saveQRCodeAsImage()">
+        Gem QR kode som billede
+      </button>
+    </div>
+    <button type="button" class="btn btn-secondary qrbtn" (click)="closeQRModal()">
+      Luk
+    </button>
+  </div>
+</div>

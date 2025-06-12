@@ -1,0 +1,52 @@
+<app-navbar></app-navbar>
+
+<h2>Låne Arkiv</h2>
+<p>Liste af lån</p>
+
+<button class="btn btn-primary" [routerLink]="['/archive-menu']">
+  Gå Tilbage
+</button>
+
+<!-- this is for the search bar -->
+<div class="form-group">
+  <label for="searchArchiveLoan">Søg Lån:</label>
+  <input type="text" class="form-control" id="searchArchiveLoan" [(ngModel)]="searchArchivedLoanTerm"
+    (input)="filterArchiveLoans()" placeholder="Søg efter email eller serienummer" />
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Dato for sletning</th>
+      <th>Bruger</th>
+      <th>Serienummer</th>
+      <th>Model</th>
+      <th>Type</th>
+      <th>Låne Dato</th>
+      <th>Retur Dato</th>
+      <th>Note</th>
+      <th>Handling</th>
+
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let archiveloan of filteredArchivedLoans">
+      <td>{{ archiveloan.deleteTime | date : "dd/MM/yyyy" }}</td>
+      <td>{{ getUserEmail(archiveloan.userId) }}</td>
+      <td>{{ getItemSerialNumber(archiveloan.itemId) }}</td>
+      <td>{{ getItemGroupName(archiveloan.itemId) }}</td>
+      <td>{{ getItemTypeName(archiveloan.itemId) }}</td>
+      <td>{{ archiveloan.loanDate | date : "dd/MM/yyyy" }}</td>
+      <td>{{ archiveloan.returnDate | date : "dd/MM/yyyy" }}</td>
+      <td>{{archiveloan.archiveNote}}</td>
+      <td>
+        <button class="btn btn-primary" (click)="restoreLoan(archiveloan.id)">
+          Gendan
+        </button>
+        <button class="btn btn-danger" (click)="confirmDelete(archiveloan.id)">
+          Slet
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>

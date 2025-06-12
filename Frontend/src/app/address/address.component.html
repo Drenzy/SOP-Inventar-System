@@ -1,0 +1,103 @@
+<app-navbar></app-navbar>
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-6">
+      <h2>Addresser</h2>
+      <!-- this is for the search bar -->
+      <div class="form-group">
+        <label for="searchAddress">Søg Addresser:</label>
+        <input type="text" class="form-control" id="searchAddress" [(ngModel)]="searchAddressTerm"
+          (input)="filterAddresses()" placeholder="Søg Addresser">
+      </div>
+
+      <!-- this is for the table -->
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Postnumer</th>
+              <th>Region</th>
+              <th>By</th>
+              <th>Vej</th>
+              <th>Aktioner</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let address of filteredAddresses" class="clickable-row">
+              <td>{{ address.zipCode }}</td>
+              <td>{{ address.region }}</td>
+              <td>{{ address.city }}</td>
+              <td>{{ address.road }}</td>
+              <td>
+                <button class="btn btn-primary btn-sm" (click)="selectAddress(address); $event.stopPropagation();">
+                  Rediger
+                </button>
+                <!--the span ? if true and : if false-->
+                <span [title]="isDeleteDisabled(address.zipCode) ? 'På denne adresse er der genstande' : ''">
+                  <button *ngIf="currentUser?.role?.id === 1" class="btn btn-danger btn-sm"
+                    [disabled]="isDeleteDisabled(address.zipCode)"
+                    (click)="confirmDelete(address.zipCode); $event.stopPropagation();">
+                    Slet
+                  </button>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- this is for the create form, when clicking it enables the form to be true -->
+      <button class="btn btn-success" (click)="showCreateForm = !showCreateForm">Opret</button>
+      <div *ngIf="showCreateForm">
+        <h3>Tilføj Addresse</h3>
+        <form (ngSubmit)="createAddress()">
+          <div class="form-group">
+            <label for="zipCode">Postnumer</label>
+            <input type="text" class="form-control" id="zipCode" [(ngModel)]="newAddress.zipCode" name="zipCode"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="region">Region</label>
+            <input type="text" class="form-control" id="region" [(ngModel)]="newAddress.region" name="region" required>
+          </div>
+          <div class="form-group">
+            <label for="city">By</label>
+            <input type="text" class="form-control" id="city" [(ngModel)]="newAddress.city" name="city" required>
+          </div>
+          <div class="form-group">
+            <label for="road">Vej</label>
+            <input type="text" class="form-control" id="road" [(ngModel)]="newAddress.road" name="road" required>
+          </div>
+          <button type="submit" class="btn btn-success">Tilføj</button>
+          <button type="button" class="btn btn-secondary" (click)="cancelCreateForm()">Cancel</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- this is for the edit form, when clicking it enables the form to be true -->
+    <div class="col-md-6" *ngIf="selectedAddress">
+      <h2>Rediger Addresse</h2>
+      <form (ngSubmit)="updateAddress()">
+        <div class="form-group">
+          <label for="zipCode">Postnumer</label>
+          <input type="text" class="form-control" id="zipCode" [(ngModel)]="selectedAddress.zipCode" name="zipCode"
+            readonly>
+        </div>
+        <div class="form-group">
+          <label for="region">Region</label>
+          <input type="text" class="form-control" id="region" [(ngModel)]="selectedAddress.region" name="region">
+        </div>
+        <div class="form-group">
+          <label for="city">By</label>
+          <input type="text" class="form-control" id="city" [(ngModel)]="selectedAddress.city" name="city">
+        </div>
+        <div class="form-group">
+          <label for="road">Vej</label>
+          <input type="text" class="form-control" id="road" [(ngModel)]="selectedAddress.road" name="road">
+        </div>
+        <button type="submit" class="btn btn-primary">Opdater</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
+      </form>
+    </div>
+  </div>
+</div>

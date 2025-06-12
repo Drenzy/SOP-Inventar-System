@@ -1,0 +1,136 @@
+nav {
+    background-color: #3b6045;
+    color: #e6f2e9; 
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    font-size: 20px;
+    padding: 0.5rem 1rem; 
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color: #e6f2e9;
+  }
+
+/* For nav links */
+.nav-link {
+    color: #e6f2e9;
+    transition: transform 0.2s ease-in-out; 
+}
+
+.nav-link:hover {
+    transform: scale(1.1); 
+    color: #e6f2e9;
+}
+
+/* Logout button hover effect */
+#logOutBtn {
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out; 
+}
+
+#logOutBtn:hover {
+    transform: scale(1.1); 
+}
+
+.dropdown-menu {
+    background-color: #3b6045;
+    border-radius: 10px;
+    padding: 10px;
+    display: none; 
+}
+
+.dropdown-item {
+    color: #e6f2e9;
+    white-space: nowrap; 
+    transition: transform 0.2s ease-in-out; 
+}
+
+.dropdown-item:hover {
+    background-color: #a7d9a6;
+    transform: scale(1.1); 
+    color: black;
+}
+
+
+.nav-item  {
+    color: #e6f2e9;
+    margin: 0px 10px;
+}
+
+
+.nav-item.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+
+.custom-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.custom-modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.modal-buttons {
+  margin-top: 15px;
+}
+
+.modal-buttons button {
+  margin: 0 10px;
+}
+
+.custom-modal h2, p {
+  color: #000000;
+}
+
+
+@media (max-width: 768px) {
+    nav {
+        font-size: 16px; 
+        padding: 0.5rem; 
+    }
+
+    .navbar-collapse {
+        background-color: #3b6045; 
+        padding: 1rem;
+        border-radius: 10px; 
+    }
+
+    .dropdown-menu {
+        display: block; 
+        position: static; 
+    }
+
+    .nav-item {
+        margin-bottom: 10px; 
+    }
+
+    .navbar-toggler {
+        background-color: #e6f2e9; 
+        border: none;
+    }
+
+    .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%233b6045' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba%283,3,3,0.5%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+    }
+
+    .dropdown-item:hover {
+        background-color: #a7d9a6;
+    }
+
+    .nav-link:hover {
+        color: #e6f2e9;
+    }
+}

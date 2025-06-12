@@ -1,0 +1,12 @@
+@media (max-width: 768px) {
+  .grid-item {
+    height: 80px; 
+    width: 80px; 
+  }
+
+  .table th,
+  .table td {
+    font-size: 12px; 
+    padding: 3px; 
+  }
+}

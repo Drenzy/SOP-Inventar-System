@@ -1,0 +1,112 @@
+<app-navbar></app-navbar>
+<div class="container">
+  <h1>Elever</h1>
+
+  <button class="btn btn-primary" (click)="navigateToCreateUser()">
+    Opret Ny Elev
+  </button>
+
+  <div class="form-group">
+    <label for="searchRoom">Søg Elever:</label>
+    <input type="text" class="form-control" id="searchRoom" [(ngModel)]="searchName" (input)="filterUsers()"
+      placeholder="Søg Elever" />
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Navn</th>
+            <th>Email</th>
+            <th>Aktioner</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of filteredNames">
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+              <button class="btn btn-primary" (click)="selectUser(user)">Rediger</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- this is for the user detail panel -->
+    <div class="col-md-6" *ngIf="editingUser">
+      <div *ngIf="editingUser" class="user-detail">
+        <h3>Rediger Elev</h3>
+
+        <div class="form-group">
+          <label for="userName">Navn:</label>
+          <input type="text" class="form-control" id="userName" [(ngModel)]="editingUser.name" />
+        </div>
+
+        <div class="form-group">
+          <label for="userEmail">Email:</label>
+          <input type="email" class="form-control" id="userEmail" [(ngModel)]="editingUser.email" />
+        </div>
+
+        <div class="form-group">
+          <label for="userPassword">Kode:</label>
+          <input type="password" class="form-control" id="userPassword" [(ngModel)]="editingUser.password"
+            (input)="resetPasswordValidation()" />
+        </div>
+        <div *ngIf="weakPassword" class="text-warning mt-1">
+          Adgangskoden skal være mindst 15 tegn og indeholde store og små
+          bogstaver, tal og specialtegn.
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">Bekræft kode:</label>
+          <input type="password" class="form-control" id="confirmPassword" [(ngModel)]="confirmPassword"
+            (input)="resetPasswordValidation()" />
+        </div>
+        <div *ngIf="passwordMismatch" class="text-danger mt-1">
+          Adgangskoderne matcher ikke.
+        </div>
+
+        <button class="btn btn-primary" (click)="onSave()">Gem</button>
+
+        <button type="button" class="btn btn-danger" (click)="openArchiveModal()">
+          Arkiver
+        </button>
+        <button class="btn btn-secondary" (click)="closeUserDetailPanel()">
+          Luk
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--MODEL FOR ARCHIVE USER-->
+<div class="modal" tabindex="-1" role="dialog" id="ArhciveModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Arkiver Elev</h5>
+        <button type="button" class="close" aria-label="Close" (click)="closeArchiveModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="ar">Skriv note:</label>
+          <input type="text" class="form-control" id="archiveNote" name="archiveNote" [(ngModel)]="archiveNote"
+            placeholder="Skriv note om hvorfor eleven arkiveres" />
+
+          <div class="text-danger" *ngIf="showErrorNote">Note er påkrævet.</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeArchiveModal()">
+          Annuller
+        </button>
+        <button type="button" class="btn btn-danger" (click)="confirmArchiveUser()">
+          Arkiver
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

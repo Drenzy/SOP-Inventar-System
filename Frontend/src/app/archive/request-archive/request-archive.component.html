@@ -1,0 +1,51 @@
+<app-navbar></app-navbar>
+
+<h2>Anmod Arkiv</h2>
+<p>Liste af anmodninger</p>
+
+<button class="btn btn-primary" [routerLink]="['/archive-menu']">
+  Gå Tilbage
+</button>
+
+<!-- this is for the search bar -->
+<div class="form-group">
+  <label for="searchArchiveRequest">Søg Request:</label>
+  <input type="text" class="form-control" id="searchArchiveRequest" [(ngModel)]="searchArchivedRequest"
+    (input)="filteredArchivedRequests()" placeholder="Søg modtager email eller Genstand" />
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Dato for sletning</th>
+      <th>Dato for oprettelse</th>
+      <th>Genstand</th>
+      <th>Besked</th>
+      <th>Modtager Email</th>
+      <th>Status</th>
+      <th>BrugerId</th>
+      <th>Note</th>
+      <th>Handling</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let archivedRequest of filteredArchivedRequest">
+      <td>{{ archivedRequest.deleteTime | date : "dd/MM/yyyy" }}</td>
+      <td>{{ archivedRequest.date | date : "dd/MM/yyyy" }}</td>
+      <td>{{ archivedRequest.item }}</td>
+      <td>{{ archivedRequest.message }}</td>
+      <td>{{ archivedRequest.recipientEmail }}</td>
+      <td>{{ archivedRequest.status }}</td>
+      <td>{{ getUserEmail(archivedRequest.userId) }}</td>
+      <td>{{ archivedRequest.archiveNote }}</td>
+      <td>
+        <button class="btn btn-primary" (click)="restoreRequest(archivedRequest.id)">
+          Gendan
+        </button>
+        <button class="btn btn-danger" (click)="confirmDelete(archivedRequest.id)">
+          Slet
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>

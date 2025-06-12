@@ -1,0 +1,29 @@
+.table-responsive {
+    overflow-x: auto; 
+    -webkit-overflow-scrolling: touch; 
+  }
+  
+  .table {
+    min-width: 100%; 
+    table-layout: auto; 
+  }
+  
+  .table th, 
+  .table td {
+    white-space: nowrap; 
+    text-align: center; 
+  }
+  
+  @media (max-width: 768px) {
+    .table th, 
+    .table td {
+      font-size: 12px; 
+      padding: 5px; 
+    }
+  
+    .btn-sm {
+      font-size: 10px; 
+      padding: 4px 6px; 
+    }
+  }
+  

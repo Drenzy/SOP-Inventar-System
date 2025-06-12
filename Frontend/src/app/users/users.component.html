@@ -1,0 +1,135 @@
+<!-- this is for getting the navbar in the page -->
+<app-navbar></app-navbar>
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-6">
+      <button class="btn btn-primary" (click)="navigateToCreateUser()">
+        Opret Ny Bruger
+      </button>
+
+      <h2>Admin brugerpanel</h2>
+      <!-- this is for the search bar and the dropdown for the user group -->
+      <div class="form-group">
+        <label for="userGroup">Vælg bruger gruppe:</label>
+        <select class="form-control" id="userGroup" (change)="onGroupChange($event)">
+          <option value="" disabled selected>Vælg en bruger gruppe...</option>
+          <option *ngFor="let role of roles" [value]="role.id">
+            {{ role.name }}
+          </option>
+        </select>
+      </div>
+
+      <!-- this is for the search bar -->
+      <div class="form-group mb-0">
+        <label for="search">Søg Brugere:</label>
+        <input type="text" class="form-control" id="search" [(ngModel)]="searchTerm" (input)="onSearchChange()"
+          placeholder="Søg navn eller email" />
+      </div>
+
+      <!-- this is for the table of users -->
+      <div class="col-md-6">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Navn</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Aktioner</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of filteredUsers">
+              <td>{{ user.name }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.userRole?.name }}</td>
+              <td>
+                <button class="btn btn-primary" (click)="selectUser(user)">Rediger</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- this is for the user detail panel -->
+    <div class="col-md-6" *ngIf="editingUser">
+      <div *ngIf="editingUser" class="user-detail">
+        <h3>Rediger Bruger</h3>
+        <div class="form-group">
+          <label for="userName">Navn:</label>
+          <input type="text" class="form-control" id="userName" [(ngModel)]="editingUser.name" />
+        </div>
+        <div class="form-group">
+          <label for="userEmail">Email:</label>
+          <input type="email" class="form-control" id="userEmail" [(ngModel)]="editingUser.email" />
+        </div>
+        <div class="form-group">
+          <label for="userRole">Rolle:</label>
+          <select class="form-control" id="userRole" [(ngModel)]="editingUser.roleId">
+            <option *ngFor="let role of roles" [value]="role.id">
+              {{ role.name }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="userPassword">Kode:</label>
+          <input type="password" class="form-control" id="userPassword" [(ngModel)]="editingUser.password"
+            (input)="resetPasswordValidation()" />
+        </div>
+        <div *ngIf="weakPassword" class="text-warning mt-1">
+          Adgangskoden skal være mindst 15 tegn og indeholde store og små
+          bogstaver, tal og specialtegn.
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">Bekræft kode:</label>
+          <input type="password" class="form-control" id="confirmPassword" [(ngModel)]="confirmPassword"
+            (input)="resetPasswordValidation()" />
+        </div>
+        <div *ngIf="passwordMismatch" class="text-danger mt-1">
+          Adgangskoderne matcher ikke.
+        </div>
+        <button class="btn btn-primary" (click)="onSave()">Gem</button>
+        <span [title]="isDeleteDisabled(selectedUser) ? 'Denne bruger har lånede genstande' : ''">
+          <button type="button" class="btn btn-danger" [disabled]="isDeleteDisabled(selectedUser)"
+            (click)="openArchiveModal()">
+            Arkiver
+          </button>
+        </span>
+        <button class="btn btn-secondary" (click)="closeUserDetailPanel()">
+          Luk
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--MODEL FOR ARCHIVE USER-->
+<div class="modal" tabindex="-1" role="dialog" id="ArhciveModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Arkiver Brguer</h5>
+        <button type="button" class="close" aria-label="Close" (click)="closeArchiveModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="ar">Skriv note:</label>
+          <input type="text" class="form-control" id="archiveNote" name="archiveNote" [(ngModel)]="archiveNote"
+            placeholder="Skriv note om hvorfor brugeren arkiveres" />
+
+          <div class="text-danger" *ngIf="showErrorNote">Note er påkrævet.</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeArchiveModal()">
+          Annuller
+        </button>
+        <button type="button" class="btn btn-danger" (click)="confirmArchiveUser()">
+          Arkiver
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

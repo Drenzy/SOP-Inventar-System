@@ -1,0 +1,54 @@
+<app-navbar></app-navbar>
+<div class="container mt-5">
+  <div>
+    <h2>Opret Bruger</h2>
+    <form #userForm="ngForm" (ngSubmit)="createUser(userForm)">
+      <div class="form-group">
+        <label for="name">Navn:</label>
+        <input type="text" class="form-control" id="name" [(ngModel)]="user.name" name="name" required />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" class="form-control" id="email" [(ngModel)]="user.email" name="email" required />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Kode:</label>
+        <input type="password" class="form-control" id="password" [(ngModel)]="user.password" name="password" required
+          (input)="validatePassword()" />
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Gentag Kode:</label>
+        <input type="password" class="form-control" id="confirmPassword" [(ngModel)]="confirmPassword"
+          name="confirmPassword" required (input)="validatePassword()" />
+
+        <div *ngIf="passwordMismatch" class="text-danger mt-1">
+          Adgangskoderne matcher ikke.
+        </div>
+
+        <div *ngIf="weakPassword" class="text-danger mt-1">
+          Adgangskoden skal være mindst 15 tegn lang og indeholde store og små bogstaver, tal og specialtegn.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="userGroup">Vælg bruger rolle:</label>
+        <select class="form-control" id="userGroup" [(ngModel)]="user.roleId" name="roleid"
+          (change)="onRoleChange($event)" required>
+          <option value="" disabled selected>Vælg en bruger gruppe...</option>
+          <option *ngIf="currentUser?.role?.id === 1" value="1">Admins</option>
+          <option *ngIf="currentUser?.role?.id === 1" value="4">Drift</option>
+          <option *ngIf="currentUser?.role?.id === 1" value="2">Instruktøre</option>
+          <option *ngIf="currentUser?.role?.id === 1 || currentUser?.role?.id === 2 || currentUser?.role?.id === 4"
+            value="3">Elever</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-success" [disabled]="passwordMismatch || weakPassword">
+        Opret Bruger
+      </button>
+    </form>
+  </div>
+</div>

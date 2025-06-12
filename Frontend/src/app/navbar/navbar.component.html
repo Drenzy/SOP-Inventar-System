@@ -1,0 +1,153 @@
+<nav class="navbar navbar-expand-lg navbar-light">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+    aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/profile">Profil</a>
+      </li>
+
+      <!-- Dropdown menu only for users. -->
+      <li class="nav-item dropdown">
+        <!--Only accessable for users with RoleId 1 bcs that is admin-->
+        <a class="nav-link dropdown-toggle" *ngIf="
+            currentUser?.role?.id === 1 ||
+            currentUser?.role?.id === 2 ||
+            currentUser?.role?.id === 4
+          " href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Brugere
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" *ngIf="currentUser?.role?.id === 1" routerLink="/users">Brugere</a>
+          <a class="dropdown-item"
+            *ngIf="currentUser?.role?.id === 1 || currentUser?.role?.id === 2 || currentUser?.role?.id === 4"
+            routerLink="/students">Elever</a>
+          <a class="dropdown-item"
+            *ngIf="currentUser?.role?.id === 1 || currentUser?.role?.id === 2 || currentUser?.role?.id === 4"
+            routerLink="/create-user">Opret bruger</a>
+          <a class="dropdown-item" *ngIf="currentUser?.role?.id === 1" routerLink="/roles">Roller</a>
+        </div>
+      </li>
+
+      <!-- Dropdown menu for Items. -->
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" *ngIf="
+            currentUser?.role?.id === 1 ||
+            currentUser?.role?.id === 4
+          " href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Inventar
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" *ngIf="
+              currentUser?.role?.id === 1 ||
+              currentUser?.role?.id === 4
+            " routerLink="/itemgroups">Genstands Grupper</a>
+
+          <a class="dropdown-item" *ngIf="
+              currentUser?.role?.id === 1 ||
+              currentUser?.role?.id === 4
+            " routerLink="/itemtype">Genstands Typer</a>
+
+          <a class="dropdown-item" *ngIf="
+              currentUser?.role?.id === 1 ||
+              currentUser?.role?.id === 4
+            " routerLink="/inventory">Inventar</a>
+
+          <a class="dropdown-item" *ngIf="currentUser?.role?.id === 1" routerLink="/status">Status</a>
+
+          <a class="dropdown-item" *ngIf="
+              currentUser?.role?.id === 1 ||
+              currentUser?.role?.id === 4
+            " routerLink="/statushistory">Statushistorie</a>
+        </div>
+      </li>
+
+      <!-- Dropdown menu for Computers. -->
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" *ngIf="currentUser?.role?.id === 1 || currentUser?.role?.id === 2" href="#"
+          id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Computer
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" *ngIf="currentUser?.role?.id === 1 || currentUser?.role?.id === 2"
+            routerLink="/computer">Computer</a>
+
+          <a class="dropdown-item" *ngIf="currentUser?.role?.id === 1 || currentUser?.role?.id === 2"
+            routerLink="/computerPart">Computer dele</a>
+
+          <a class="dropdown-item" *ngIf="currentUser?.role?.id === 1 || currentUser?.role?.id === 2"
+            routerLink="/partGroups">Del Grupper</a>
+
+          <a class="dropdown-item" *ngIf="currentUser?.role?.id === 1 || currentUser?.role?.id === 2"
+            routerLink="/part-type">Del Typer</a>
+        </div>
+      </li>
+
+      <!-- Dropdown menu for Location. -->
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" *ngIf="currentUser?.role?.id === 1 || currentUser?.role?.id === 4" href="#"
+          id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Lokation
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" *ngIf="currentUser?.role?.id === 1 || currentUser?.role?.id === 4"
+            routerLink="/address">Adresser</a>
+
+          <a class="dropdown-item" *ngIf="currentUser?.role?.id === 1 || currentUser?.role?.id === 4"
+            routerLink="/buildings">Bygninger</a>
+
+          <a class="dropdown-item" *ngIf="currentUser?.role?.id === 1 || currentUser?.role?.id === 4"
+            routerLink="/room">Lokaler</a>
+        </div>
+      </li>
+
+      <!-- Dropdown menu for Loans. -->
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" *ngIf="
+            currentUser?.role?.id === 1 ||
+            currentUser?.role?.id === 2 ||
+            currentUser?.role?.id === 4
+          " href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Lån
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" *ngIf="
+              currentUser?.role?.id === 1 ||
+              currentUser?.role?.id === 2 ||
+              currentUser?.role?.id === 4
+            " routerLink="/request">Anmod</a>
+
+          <a class="dropdown-item" *ngIf="
+              currentUser?.role?.id === 1 ||
+              currentUser?.role?.id === 2 ||
+              currentUser?.role?.id === 4
+            " routerLink="/loan">Udlån</a>
+        </div>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" *ngIf="currentUser?.role?.id === 1" routerLink="/archive-menu">Arkiv</a>
+      </li>
+
+      <!--Logout BTN-->
+      <li class="nav-item">
+        <a id="logOutBtn" class="nav-link" (click)="logout()">Log Ud</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<router-outlet></router-outlet>
+
+<!-- Custom Modal for session extension -->
+<div class="custom-modal" *ngIf="showExtendModal">
+  <div class="custom-modal-content">
+    <h2>Session Expired</h2>
+    <p>Your session has expired. Would you like to extend your session?</p>
+    <div class="modal-buttons">
+      <button class="btn btn-primary" (click)="extendSession()">Yes</button>
+      <button class="btn btn-secondary" (click)="logout()">No</button>
+    </div>
+  </div>
+</div>

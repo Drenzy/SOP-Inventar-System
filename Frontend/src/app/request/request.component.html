@@ -1,0 +1,131 @@
+<app-navbar></app-navbar>
+
+<div class="container mt-5">
+  <div class="col-md-9">
+    <h2>Anmodninger</h2>
+
+    <div class="form-group">
+      <label for="searchRoom">Søg Anmodninger:</label>
+      <input type="text" class="form-control" id="searchRoom" [(ngModel)]="searchRequest" (input)="filterRequest()"
+        placeholder="Sender, Modtager eller Gendstand" />
+    </div>
+
+    <div class="table-container">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Sender Email</th>
+            <th>Modtager Email</th>
+            <th>Gendstand</th>
+            <th>Besked</th>
+            <th>Dato Sendt</th>
+            <th>Status</th>
+            <th>Sendt fra</th>
+            <th>Aktioner</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let request of filteredRequest">
+            <td>{{ request.requestUser?.email }}</td>
+            <td>{{ request.recipientEmail }}</td>
+            <td>{{ request.item }}</td>
+            <td>{{ request.message }}</td>
+            <td>{{ request.date | date : "dd/MM/yyyy"}}</td>
+            <td>{{ request.status }}</td>
+            <td>{{ request.requestUser?.email }}</td>
+
+            <td>
+              <button type="button" class="btn btn-primary" (click)="selectRequest(request)">
+                Rediger
+              </button>
+
+              <button type="button" class="btn btn-danger" (click)="openArchiveModal(request)">
+                Arkiver
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="col-md-4" *ngIf="selectedRequest">
+    <div>
+      <h2>Opdater Anmodning</h2>
+
+      <form (ngSubmit)="updateRequest()">
+        <div class="form-group">
+          <label for="user">Vælg Bruger</label>
+          <select class="form-control" id="user" [(ngModel)]="newRequest.userId" name="userId" required>
+            <option *ngFor="let user of users" [value]="user.id">
+              {{ user.email }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="recipient">Instruktør / Admins</label>
+          <select class="form-control" id="recipient" [(ngModel)]="newRequest.recipientEmail" name="recipientEmail"
+            required>
+            <option *ngFor="let inst of instuctors" [value]="inst.email">
+              {{ inst.email }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Gendstand</label>
+          <input type="text" class="form-control" [(ngModel)]="newRequest.item" name="item" />
+        </div>
+
+        <div class="form-group">
+          <label>Besked</label>
+          <input type="text" class="form-control" [(ngModel)]="newRequest.message" name="message" />
+        </div>
+
+
+        <div class="form-group">
+          <label>Status</label>
+          <input type="text" class="form-control" [(ngModel)]="newRequest.status" name="status" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Opdater</button>
+        <button type="button" class="btn btn-secondary" (click)="resetForm()">
+          Annuller
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!--MODAL FOR ARCHIVE USER-->
+<div class="modal" tabindex="-1" role="dialog" id="ArhciveModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Arkiver Anmodning</h5>
+        <button type="button" class="close" aria-label="Close" (click)="closeArchiveModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="ar">Skriv note:</label>
+          <input type="text" class="form-control" id="archiveNote" name="archiveNote" [(ngModel)]="archiveNote"
+            placeholder="Skriv note om hvorfor anmodningen arkiveres" />
+
+          <div class="text-danger" *ngIf="showErrorNote">Note er påkrævet.</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeArchiveModal()">
+          Annuller
+        </button>
+        <button type="button" class="btn btn-danger" (click)="confirmArchiveRequest()">
+          Arkiver
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

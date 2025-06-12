@@ -1,0 +1,56 @@
+<app-navbar></app-navbar>
+<div class="container mt-5">
+  <h2>Deltyper</h2>
+  <div class="form-group">
+    <label for="searchPartType">Søg Deltype:</label>
+    <input type="text" class="form-control" id="searchPartType" [(ngModel)]="searchPartType" (input)="filterPT()"
+      placeholder="Søg Deltype">
+  </div>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Deltypenavn</th>
+        <th>Handlinger</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let partType of filteredPartTypes" class="clickable-row">
+        <td>{{ partType.partTypeName }}</td>
+        <td>
+          <button class="btn btn-primary btn-sm"
+            (click)="selectPartType(partType); $event.stopPropagation();">Rediger</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <!-- This part is for the update. -->
+      <div *ngIf="selectedPartType">
+        <h3>Rediger Deltype</h3>
+        <form (ngSubmit)="updatePartType()">
+          <div class="form-group">
+            <label for="partTypeName">Deltypenavn</label>
+            <input type="text" class="form-control" id="partTypeName" [(ngModel)]="selectedPartType.partTypeName"
+              name="partTypeName">
+          </div>
+          <button type="submit" class="btn btn-primary">Opdater Deltype</button>
+          <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Annuller</button>
+        </form>
+      </div>
+      <!-- This part is for updating. -->
+      <div *ngIf="!selectedPartType">
+        <h3>Opret Deltype</h3>
+        <form (ngSubmit)="createPartType()">
+          <div class="form-group">
+            <label for="newPartTypeName">Deltypenavn</label>
+            <input type="text" class="form-control" id="newPartTypeName" [(ngModel)]="newPartType.partTypeName"
+              name="partTypeName">
+          </div>
+          <button type="submit" class="btn btn-primary">Opret Deltype</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

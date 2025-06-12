@@ -1,0 +1,127 @@
+<app-navbar></app-navbar>
+<div class="container mt-5">
+  <h2>Genstands Grupper</h2>
+  <div class="form-group mb-3">
+    <label>Søg:</label>
+    <input type="text" class="form-control" [(ngModel)]="searchItemGroup" (input)="filterItemGroup()" />
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>ModelNavn</th>
+          <th>Genstands Type</th>
+          <th>Antal</th>
+          <th>Pris</th>
+          <th>Fabrikant</th>
+          <th>Garanti</th>
+          <th>Handling</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let itemGroup of filteredItemGroups">
+          <td>{{ itemGroup.modelName }}</td>
+          <td>{{ itemGroup.itemType?.typeName }}</td>
+          <td>{{ itemGroup.quantity }}</td>
+          <td>{{ itemGroup.price }}</td>
+          <td>{{ itemGroup.manufacturer }}</td>
+          <td>{{ itemGroup.warrantyPeriod }}</td>
+          <td>
+            <button class="btn btn-primary" (click)="editItemGroup(itemGroup)">Rediger</button>
+            <!--the span ? if true and : if false-->
+            <span [title]="isDeleteDisabled(itemGroup.id) ? 'Denne gruppe har lånede genstande' : ''">
+              <button type="button" class="btn btn-danger" [disabled]="isDeleteDisabled(itemGroup.id)"
+                (click)="openArchiveModal(itemGroup)">
+                Arkiver
+              </button>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!--CREATE OR EDIT ITEMGROUP-->
+  <div class="card mt-4">
+    <div class="card-body">
+      <h5 class="card-title">
+        {{ selectedItemGroup ? 'Rediger Genstands Gruppe' : 'Opret Ny Genstands Gruppe' }}
+      </h5>
+      <form>
+        <div class="form-group mb-2">
+          <label>ModelNavn:</label>
+          <input type="text" class="form-control" [(ngModel)]="tempItemGroup.modelName" name="modelName" />
+        </div>
+        <div class="form-group mb-2">
+          <label>Genstands Type:</label>
+          <select class="form-control" [(ngModel)]="tempItemGroup.itemTypeId" name="itemTypeId">
+            <option *ngFor="let itemType of itemTypes" [value]="itemType.id">
+              {{ itemType.typeName }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group mb-2">
+          <label>Antal:</label>
+          <input type="number" class="form-control" [(ngModel)]="tempItemGroup.quantity" name="quantity" />
+        </div>
+
+        <div class="form-group mb-2">
+          <label>Pris pr stk:</label>
+          <input type="number" class="form-control" [(ngModel)]="tempItemGroup.price" name="price" />
+        </div>
+
+        <div class="form-group mb-2">
+          <label>Fabrikant:</label>
+          <input type="text" class="form-control" [(ngModel)]="tempItemGroup.manufacturer" name="manufacturer" />
+        </div>
+
+        <div class="form-group mb-2">
+          <label>Garanti Periode:</label>
+          <input type="text" class="form-control" [(ngModel)]="tempItemGroup.warrantyPeriod" name="warrantyPeriod" />
+        </div>
+
+        <button type="button" class="btn mt-2" [ngClass]="selectedItemGroup ? 'btn-primary' : 'btn-success'"
+          (click)="saveItemGroup()">
+          {{ selectedItemGroup ? 'Gem Ændringer' : 'Opret' }}
+        </button>
+
+        <button *ngIf="selectedItemGroup" type="button" class="btn btn-secondary mt-2 ms-2" (click)="cancelEdit()">
+          Annuller
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!--MODAL FOR ARCHIVE ITEMGROUP-->
+<div class="modal" tabindex="-1" role="dialog" id="ArhciveModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Arkiver Genstandsgruppe</h5>
+        <button type="button" class="close" aria-label="Close" (click)="closeArchiveModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="ar">Skriv note:</label>
+          <input type="text" class="form-control" id="archiveNote" name="archiveNote" [(ngModel)]="archiveNote"
+            placeholder="Skriv note om hvorfor genstandsgruppen arkiveres" />
+
+          <div class="text-danger" *ngIf="showErrorNote">Note er påkrævet.</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeArchiveModal()">
+          Annuller
+        </button>
+        <button type="button" class="btn btn-danger" (click)="confirmArchiveItemGroup()">
+          Arkiver
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

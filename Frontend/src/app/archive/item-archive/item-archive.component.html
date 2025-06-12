@@ -1,0 +1,43 @@
+<app-navbar></app-navbar>
+
+<h2>Genstands Arkiv</h2>
+<p>Liste af Genstande i arkivet</p>
+
+<button class="btn btn-primary" [routerLink]="['/archive-menu']">
+  Gå Tilbage
+</button>
+
+<div class="form-group">
+  <label for="searchArchiveItem">Søg Genstande:</label>
+  <input type="text" class="form-control" id="searchArchiveItem" [(ngModel)]="searchArchivedItemTerm"
+    (input)="filterArchivedItems()" placeholder="Søg efter serienummer" />
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Dato for sletning</th>
+      <th>Lokation</th>
+      <th>Genstandsgruppe</th>
+      <th>Serienummer</th>
+      <th>Note</th>
+      <th>Handling</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let archiveItem of filteredArchivedItems">
+      <td>{{ archiveItem.deleteTime | date : "dd/MM/yyyy" }}</td>
+      <td>{{ getRoomLocation(archiveItem.roomId) }}</td>
+      <td>{{ getItemGroupName(archiveItem.itemGroupId) }}</td>
+      <td>{{ archiveItem.serialNumber }}</td>
+      <th>{{archiveItem.archiveNote}}</th>
+      <td>
+        <button class="btn btn-primary" (click)="restoreItem(archiveItem.id)">
+          Gendan
+        </button>
+        <button class="btn btn-danger" (click)="confirmDelete(archiveItem.id)">
+          Slet
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>

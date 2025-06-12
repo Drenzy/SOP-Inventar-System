@@ -1,0 +1,75 @@
+<!--Adding navbar-->
+<app-navbar></app-navbar>
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-9">
+      <h2>Computerdele</h2>
+
+      <!--Search bar-->
+      <div class="form-group">
+        <label for="searchRoom">Søg Computerdele:</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          id="searchRoom" 
+          [(ngModel)]="searchComputerPart" 
+          (input)="filterCP()"
+          placeholder="Søg Computerdele">
+      </div>
+
+      <!--Table with computer parts-->
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Serienummer</th>
+            <th>Modelnummer</th>
+            <th>Delnavn</th>
+            <th>Type</th>
+            <th *ngIf="currentUser?.role?.id === 1" >Handlinger</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!--Loop through computer parts-->
+          <tr *ngFor="let computerPart of filteredComputerParts" class="clickable-row" (click)="selectComputerPart(computerPart)">
+            <td>{{computerPart.serialNumber}}</td>
+            <td>{{computerPart.modelNumber}}</td>
+            <td>{{computerPart.group?.partName}}</td>
+            <td>{{computerPart.group?.partType?.partTypeName}}</td>
+            <!--Buttons for delete only admins can see it-->
+            <td *ngIf="currentUser?.role?.id === 1">
+              <button *ngIf="currentUser?.role?.id === 1" class="btn btn-danger btn-sm" (click)="confirmDelete(computerPart.id); $event.stopPropagation();">Slet</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!--Edit and Create-->
+    </div>
+    <div class="col-md-3">
+      <div>
+        <h2>{{selectedComputerPart ? 'Opdater' : 'Opret'}} Computerdel</h2>
+        <!--If selecting then its update form otherwise its a create form-->
+        <form (ngSubmit)="selectedComputerPart ? updateComputerPart() : createComputerPart()">
+          <!--Input for binding to newComputerPart-->
+          <div class="form-group">
+            <label for="serialNumber">Serienummer</label>
+            <input type="text" class="form-control" id="serialNumber" [(ngModel)]="newComputerPart.serialNumber" name="serialNumber">
+          </div>
+          <div class="form-group">
+            <label for="modelNumber">Modelnummer</label>
+            <input type="text" class="form-control" id="modelNumber" [(ngModel)]="newComputerPart.modelNumber" name="modelNumber">
+          </div>
+          <div class="form-group">
+            <label for="partGroup">Delgruppe</label>
+            <select class="form-control" id="partGroup" [(ngModel)]="newComputerPart.partGroupId" name="partGroupId">
+              <option *ngFor="let group of partGroups" [value]="group.id">{{ group.partName }}</option>
+            </select>
+          </div>
+          <!--submit and cancel button-->
+          <button type="submit" class="btn btn-success">{{selectedComputerPart ? 'Opdater' : 'Opret'}}</button>
+          <button type="button" class="btn btn-secondary" (click)="resetForm()">Annuller</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

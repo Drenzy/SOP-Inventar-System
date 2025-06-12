@@ -1,0 +1,45 @@
+<app-navbar></app-navbar>
+
+<h2>Bruger Arkiv</h2>
+<p>Liste af brugere</p>
+
+<button class="btn btn-primary" [routerLink]="['/archive-menu']">
+  Gå Tilbage
+</button>
+
+<!-- this is for the search bar -->
+<div class="form-group">
+  <label for="searchArchiveUser">Søg Brugere:</label>
+  <input type="text" class="form-control" id="searchArchiveUser" [(ngModel)]="searchArchivedUser"
+    (input)="filteredArchivedUsers()" placeholder="Søg navn eller email" />
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Dato for sletning</th>
+        <th>Navn</th>
+        <th>Email</th>
+        <th>Rolle</th>
+        <th>Note</th>
+        <th>Handling</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let archiveUser of filteredArchivedUser">
+        <td>{{ archiveUser.deleteTime | date : "dd/MM/YYYY" }}</td>
+        <td>{{ archiveUser.name }}</td>
+        <td>{{ archiveUser.email }}</td>
+        <td>{{ getRoleName(archiveUser.roleId) }}</td>
+        <td>{{ archiveUser.archiveNote }}</td>
+        <td>
+          <button class="btn btn-primary" (click)="restoreUser(archiveUser.id)">
+            Gendan
+          </button>
+          <button class="btn btn-danger" (click)="confirmDelete(archiveUser.id)">
+            Slet
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,163 @@
+<app-navbar></app-navbar>
+<div class="container col-md-15">
+  <div class="table-container">
+    <h2>Part Groups</h2>
+    <div class="form-group">
+      <label for="searchPartGroup">Søg Part Gruppe:</label>
+      <input type="text" class="form-control" id="searchPartGroup" [(ngModel)]="searchPartGroup"
+        (input)="filterPartGroup()" placeholder="Søg Part Gruppe">
+    </div>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Navn</th>
+          <th>pris</th>
+          <th>Fabrikant</th>
+          <th>Garantiperiode</th>
+          <th>udgivelses Dato</th>
+          <th>Antal</th>
+          <th>Aktioner</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let partGroup of filteredPartGroups" class="clickable-row">
+          <td>{{ partGroup.partType.partTypeName }}</td>
+          <td>{{ partGroup.partName }}</td>
+          <td>{{ partGroup.price }}</td>
+          <td>{{ partGroup.manufacturer }}</td>
+          <td>{{ partGroup.warrantyPeriod }}</td>
+          <td>{{ partGroup.releaseDate | date }}</td>
+          <td>{{ partGroup.quantity}}</td>
+          <td>
+            <button class="btn btn-primary btn-sm"
+              (click)="selectPartGroup(partGroup); $event.stopPropagation();">Rediger</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!--EDIT-->
+  <div class="col-md-15 form-container">
+    <div *ngIf="selectedPartGroup">
+      <h3>Edit Part Group</h3>
+      <form (ngSubmit)="updatePartGroup()">
+        <div class="form-group">
+          <label for="partTypeId">Part Type</label>
+          <div class="input-group">
+            <select class="form-control" id="partTypeId" [(ngModel)]="selectedPartGroup.partTypeId" name="partTypeId">
+              <option *ngFor="let partType of partTypes" [value]="partType.id">{{ partType.partTypeName }}</option>
+            </select>
+            <div class="input-group-append">
+              <button type="button" class="btn btn-primary" (click)="openNewItemTypeModal()">Ny Type</button>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="partName">Navn</label>
+          <input type="text" class="form-control" id="partName" [(ngModel)]="selectedPartGroup.partName"
+            name="partName">
+        </div>
+        <div class="form-group">
+          <label for="price">Pris</label>
+          <input type="number" class="form-control" id="price" [(ngModel)]="selectedPartGroup.price" name="price">
+        </div>
+        <div class="form-group">
+          <label for="manufacturer">Fabrikant</label>
+          <input type="text" class="form-control" id="manufacturer" [(ngModel)]="selectedPartGroup.manufacturer"
+            name="manufacturer">
+        </div>
+        <div class="form-group">
+          <label for="warrantyPeriod">Garantiperiode</label>
+          <input type="text" class="form-control" id="warrantyPeriod" [(ngModel)]="selectedPartGroup.warrantyPeriod"
+            name="warrantyPeriod">
+        </div>
+        <div class="form-group">
+          <label for="releaseDate">Udgivelses Dato</label>
+          <input type="date" class="form-control" id="releaseDate" [(ngModel)]="selectedPartGroup.releaseDate"
+            name="releaseDate">
+        </div>
+        <div class="form-group">
+          <label for="quantituy">Antal</label>
+          <input type="number" class="form-control" id="quantituy" [(ngModel)]="selectedPartGroup.quantity"
+            name="quantituy">
+        </div>
+        <button type="submit" class="btn btn-primary">Opdater Part Gruppe</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
+      </form>
+    </div>
+
+    <!--CREATE-->
+    <div *ngIf="!selectedPartGroup">
+      <h3>Opret Part Gruppe</h3>
+      <form (ngSubmit)="createPartGroup()">
+        <div class="form-group">
+          <label for="newPartTypeId">Type</label>
+          <div class="input-group">
+            <select class="form-control" id="newPartTypeId" [(ngModel)]="newPartGroup.partTypeId" name="partTypeId">
+              <option *ngFor="let partType of partTypes" [value]="partType.id">{{ partType.partTypeName }}</option>
+            </select>
+            <div class="input-group-append">
+              <button type="button" class="btn btn-primary" (click)="openNewItemTypeModal()">Ny Type</button>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="newPartName">Navn</label>
+          <input type="text" class="form-control" id="newPartName" [(ngModel)]="newPartGroup.partName" name="partName">
+        </div>
+        <div class="form-group">
+          <label for="newPrice">Pris</label>
+          <input type="number" class="form-control" id="newPrice" [(ngModel)]="newPartGroup.price" name="price">
+        </div>
+        <div class="form-group">
+          <label for="newManufacturer">Fabrikant</label>
+          <input type="text" class="form-control" id="newManufacturer" [(ngModel)]="newPartGroup.manufacturer"
+            name="manufacturer">
+        </div>
+        <div class="form-group">
+          <label for="newWarrantyPeriod">Garantiperiode</label>
+          <input type="text" class="form-control" id="newWarrantyPeriod" [(ngModel)]="newPartGroup.warrantyPeriod"
+            name="warrantyPeriod">
+        </div>
+        <div class="form-group">
+          <label for="newReleaseDate">Udgivelses Dato</label>
+          <input type="date" class="form-control" id="newReleaseDate" [(ngModel)]="newPartGroup.releaseDate"
+            name="releaseDate">
+        </div>
+        <div class="form-group">
+          <label for="newQuantity">Antal</label>
+          <input type="number" class="form-control" id="newQuantity" [(ngModel)]="newPartGroup.quantity"
+            name="quantity">
+        </div>
+        <button type="submit" class="btn btn-primary">Opret Part Gruppe</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for adding new part type -->
+<div class="modal" id="newItemTypeModal" tabindex="-1" role="dialog" aria-labelledby="newItemTypeModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="newItemTypeModalLabel">Ny Part Type</h5>
+        <button type="button" class="close" (click)="closeNewItemTypeModal()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="createNewPartType()">
+          <div class="form-group">
+            <label for="newPartTypeName">Type Navn</label>
+            <input type="text" class="form-control" id="newPartTypeName" [(ngModel)]="newPartType.partTypeName"
+              name="partTypeName">
+          </div>
+          <button type="submit" class="btn btn-success">Opret Type</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

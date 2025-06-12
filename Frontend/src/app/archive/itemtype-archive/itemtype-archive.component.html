@@ -1,0 +1,40 @@
+<app-navbar></app-navbar>
+
+<h2>Genstandstype Arkiv</h2>
+<p>Liste af Genstandstyper</p>
+
+<button class="btn btn-primary" [routerLink]="['/archive-menu']">
+  Gå Tilbage
+</button>
+
+<div class="form-group">
+  <label for="searchArchiveItemType">Søg Genstandstype:</label>
+  <input type="text" class="form-control" id="searchArchiveItemType" [(ngModel)]="searchArchivedItemTypeTerm"
+    (input)="filterArchivedItemTypes()" placeholder="Søg efter Genstandstype" />
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Dato for sletning</th>
+      <th>Genstandstype Navn</th>
+      <th>Note:</th>
+      <th>Handling</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let archiveItemType of filteredArchivedItemTypes">
+      <th>{{ archiveItemType.deleteTime | date : "dd/MM/yyyy" }}</th>
+      <td>{{ archiveItemType.typeName }}</td>
+      <td>{{ archiveItemType.archiveNote }}</td>
+      <td>
+        <button class="btn btn-primary" (click)="restoreItemType(archiveItemType.id)">
+          Gendan
+        </button>
+        <button class="btn btn-danger" (click)="confirmDelete(archiveItemType.id)">
+          Slet
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>

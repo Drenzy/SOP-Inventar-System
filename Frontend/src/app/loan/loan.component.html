@@ -1,0 +1,153 @@
+<app-navbar></app-navbar>
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-6">
+      <h2>Tilgængelige Genstande</h2>
+      <div class="form-group">
+        <label for="searchAvailableItems">Søg Tilgængelige Genstande:</label>
+        <input type="text" class="form-control" id="searchAvailableItems" [(ngModel)]="searchAvailableItemsTerm"
+          (input)="filterAvailableItems()" placeholder="Søg Tilgængelige Genstande" />
+      </div>
+
+      <!--Table fopr available items for loan-->
+      <div class="table-responsive">
+        <table class="table table-hover" id="tableResizeTest">
+          <thead>
+            <tr>
+              <th>Serie Nummer</th>
+              <th>Genstands Type</th>
+              <th>Modelnavn</th>
+              <th>Aktioner</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of filteredAvailableItems" class="clickable-row">
+              <td>{{ item.serialNumber }}</td>
+              <td>{{ item.itemGroup?.itemType?.typeName }}</td>
+              <td>{{ item.itemGroup?.modelName }}</td>
+              <td>
+                <button class="btn btn-primary" (click)="loanItem(item)">
+                  udlån
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!--Edit / Create-->
+    <div class="col-md-6">
+      <h2>{{ isEditing ? "rediger Lån" : "Opret Lån" }}</h2>
+      <form (ngSubmit)="createLoan()">
+        <div class="form-group">
+          <label for="item">Genstand</label>
+          <select class="form-control" id="item" [(ngModel)]="newLoan.itemId" name="item" required>
+            <option *ngFor="let item of getAvailableItemsForEdit()" [value]="item.id">
+              {{ item.serialNumber }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="user">Email</label>
+          <select class="form-control" id="user" [(ngModel)]="newLoan.userId" name="user" required>
+            <option *ngFor="let user of users" [value]="user.id">
+              {{ user.email }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="loanDate">Udlåns dato</label>
+          <input type="date" class="form-control" id="loanDate" [(ngModel)]="newLoan.loanDate" name="loanDate"
+            required />
+        </div>
+        <div class="form-group">
+          <label for="returnDate">Retur Dato</label>
+          <input type="date" class="form-control" id="returnDate" [(ngModel)]="newLoan.returnDate" name="returnDate"
+            required />
+        </div>
+
+        <button type="submit" class="btn btn-primary" [ngClass]="isEditing ? 'btn-primary' : 'btn-success'">
+          {{ isEditing ? "Opdater" : "Opret Lån" }}
+        </button>
+
+        <button type="button" class="btn btn-secondary" *ngIf="isEditing" (click)="cancelEdit()">
+          Cancel
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Table for loans-->
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <h2>Lån</h2>
+      <div class="form-group">
+        <label for="searchLoans">Søg Lån:</label>
+        <input type="text" class="form-control" id="searchLoans" [(ngModel)]="searchLoansTerm" (input)="filterLoans()"
+          placeholder="Søg Lån" />
+      </div>
+      <table class="table table-hover" id="tableResizeTest">
+        <thead>
+          <tr>
+            <th>Genstands SerieNummer</th>
+            <th>Email</th>
+            <th>udlåns Dato</th>
+            <th>Retur Dato</th>
+            <th>Aktioner</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let loan of filteredLoans" class="clickable-row">
+            <td>{{ loan.loanItem?.serialNumber }}</td>
+            <td>{{ loan.loanUser?.email }}</td>
+            <td>{{ loan.loanDate | date }}</td>
+            <td>{{ loan.returnDate | date }}</td>
+            <td>
+              <button class="btn btn-primary" (click)="editLoan(loan)">
+                Rediger
+              </button>
+              <!--
+              *ngIf="currentUser?.role?.id === 1"
+              -->
+              <button type=" button" class="btn btn-danger" (click)="openArchiveModal(loan)">
+                Arkiver
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<!--MODEL FOR ARCHIVE Loan-->
+<div class="modal" tabindex="-1" role="dialog" id="ArhciveModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Arkiver Lån</h5>
+        <button type="button" class="close" aria-label="Close" (click)="closeArchiveModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="ar">Skriv note:</label>
+          <input type="text" class="form-control" id="archiveNote" name="archiveNote" [(ngModel)]="archiveNote"
+            placeholder="Skriv note om hvorfor lånet arkiveres" />
+          <div class="text-danger" *ngIf="showErrorNote">Note er påkrævet.</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeArchiveModal()">
+          Annuller
+        </button>
+        <button type="button" class="btn btn-danger" (click)="confirmArchiveLoan()">
+          Arkiver
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

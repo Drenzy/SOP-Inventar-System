@@ -1,0 +1,435 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - Development
+      - Daniel-Dev
+
+  pull_request:
+    branches:
+      - main
+      - Development
+      - Daniel-Dev
+
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    services:
+      mssql:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+
+        env:
+          SA_PASSWORD: ${{ secrets.SA_PASSWORD }}
+          ACCEPT_EULA: "Y"
+
+        ports:
+          - 1433:1433
+
+        options: >-
+          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -Q 'SELECT 1' -C"
+          --health-interval 30s
+          --health-timeout 10s
+          --health-retries 15
+
+    strategy:
+      matrix:
+        dotnet-version: ['8.0.x']
+
+    steps:
+      # Step 1: Checkout the source code
+      - name: Checkout the code
+        uses: actions/checkout@v4
+
+      # Step 2: Add Microsoft repository
+      - name: Add Microsoft repository
+        run: |
+          echo "Adding Microsoft repository for mssql-tools18..."
+          curl https://packages.microsoft.com/keys/microsoft.asc | sudo tee /etc/apt/trusted.gpg.d/microsoft.asc
+          curl https://packages.microsoft.com/config/ubuntu/22.04/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list
+          sudo apt-get update
+          echo "Microsoft repository added and apt updated."
+
+      # Step 3: Install mssql-tools18
+      - name: Install mssql-tools18
+        run: |
+          echo "Attempting to install mssql-tools18..."
+          sudo ACCEPT_EULA=Y apt-get install -y mssql-tools18 unixodbc-dev
+          if [ $? -eq 0 ]; then
+            echo "mssql-tools18 installed successfully."
+            echo "Verifying installation:"
+            /opt/mssql-tools18/bin/sqlcmd -?
+          else
+            echo "Error: Failed to install mssql-tools18."
+            exit 1
+          fi
+
+      # Step 4: Setup .NET environment
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      - name: Debug .NET Setup
+        run: |
+          echo "Verifying .NET SDK installation..."
+          dotnet --info
+          if [ $? -eq 0 ]; then
+            echo ".NET SDK setup successful."
+          else
+            echo "Error: .NET SDK setup failed."
+            exit 1
+          fi
+
+      # Step 5: Cache .NET dependencies
+      - name: Cache .NET dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: dotnet-${{ runner.os }}-${{ matrix.dotnet-version }}-${{ hashFiles('**/packages.lock.json') }} # More specific key
+          restore-keys: |
+            dotnet-${{ runner.os }}-${{ matrix.dotnet-version }}-
+            dotnet-${{ runner.os }}-
+      - name: Debug Cache Status
+        run: |
+          echo "Checking cache hit/miss status. If 'Cache hit' is false, dependencies will be restored."
+          ls -ld ~/.nuget/packages || echo "~/.nuget/packages does not exist (expected on cache miss)"
+
+
+      # Step 6: Restore dependencies
+      - name: Restore dependencies
+        run: |
+          echo "Attempting to restore .NET dependencies for Backend/SOP/SOP.csproj..."
+          dotnet restore Backend/SOP/SOP.csproj
+          if [ $? -eq 0 ]; then
+            echo "Dependencies restored for Backend/SOP/SOP.csproj successfully."
+          else
+            echo "Error: Failed to restore dependencies for Backend/SOP/SOP.csproj."
+            exit 1
+          fi
+
+          echo "Attempting to restore .NET dependencies for Backend/SOPTests/SOPTests.csproj..."
+          dotnet restore Backend/SOPTests/SOPTests.csproj
+          if [ $? -eq 0 ]; then
+            echo "Dependencies restored for Backend/SOPTests/SOPTests.csproj successfully."
+          else
+            echo "Error: Failed to restore dependencies for Backend/SOPTests/SOPTests.csproj."
+            exit 1
+          fi
+      - name: Debug Dependency Restoration
+        run: |
+          echo "Listing restored packages for SOP.csproj (if present):"
+          ls -l Backend/SOP/obj/project.assets.json || echo "project.assets.json not found for SOP.csproj"
+          echo "Listing restored packages for SOPTests.csproj (if present):"
+          ls -l Backend/SOPTests/obj/project.assets.json || echo "project.assets.json not found for SOPTests.csproj"
+
+
+      # Step 7: Configure Local Settings (Connection String)
+      - name: Configure Local Settings
+        run: |
+          echo "Creating appsettings.Local.json with connection string..."
+          echo "{
+            \"ConnectionStrings\": {
+              \"Default\": \"Server=localhost,1433;Database=TestDB;User Id=sa;Password=${{ secrets.SA_PASSWORD }};TrustServerCertificate=True;Integrated security=False\"
+            },
+            \"Logging\": {
+              \"LogLevel\": {
+                \"Default\": \"Information\",
+                \"Microsoft.AspNetCore\": \"Warning\"
+              }
+            },
+            \"Secret\": \"TestTestTestTestTestTestTestTestTestTestTestTestTestTest\"
+          }" > Backend/SOP/appsettings.Local.json
+          echo "appsettings.Local.json created. Content preview (sensitive data masked):"
+          sed 's/Password=.*$/Password=********;/' Backend/SOP/appsettings.Local.json
+
+      # Step 8: Wait for MSSQL to be ready (Improved)
+      - name: Wait for MSSQL to be ready
+        run: |
+          echo "Waiting for SQL Server to become ready..."
+          for i in {1..60}; do # Increased retries
+            /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P ${{ secrets.SA_PASSWORD }} -Q "SELECT 1" -C
+            if [ $? -eq 0 ]; then
+              echo "SQL Server is ready!"
+              break
+            else
+              echo "SQL Server is not ready yet. Attempt $i/60. Sleeping for 2 seconds..."
+              sleep 2
+            fi
+          done
+          if [ $i -eq 60 ]; then
+            echo "Error: SQL Server did not become ready within the timeout."
+            exit 1 # Fail the step if SQL Server doesn't start
+          fi
+
+      # Step 8.5: Create Database
+      - name: Create Database
+        run: |
+          echo "Attempting to create database TestDB..."
+          /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P ${{ secrets.SA_PASSWORD }} -Q "CREATE DATABASE TestDB;" -C
+          if [ $? -eq 0 ]; then
+            echo "Database 'TestDB' created successfully."
+          else
+            echo "Error: Failed to create database 'TestDB'. It might already exist or there's a permission issue."
+            # Optionally, you can add logic here to drop and recreate if it exists and you want a fresh DB.
+            # /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P ${{ secrets.SA_PASSWORD }} -Q "DROP DATABASE IF EXISTS TestDB; CREATE DATABASE TestDB;" -C
+            exit 1
+          fi
+
+      # Step 9: Install EF Core tools
+      - name: Install EF Core tools
+        run: |
+          echo "Installing dotnet-ef global tool..."
+          dotnet tool install --global dotnet-ef
+          if [ $? -eq 0 ]; then
+            echo "dotnet-ef installed successfully."
+            echo "Adding dotnet tools path to GITHUB_PATH."
+            echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+            dotnet ef --version
+          else
+            echo "Error: Failed to install dotnet-ef."
+            exit 1
+          fi
+
+      # Step 10: Apply database migrations
+      - name: Apply database migrations
+        run: |
+          echo "Attempting to build Backend/SOP/SOP.csproj before applying migrations..."
+          dotnet build Backend/SOP/SOP.csproj --configuration Release
+          BUILD_EXIT_CODE=$?
+          if [ $BUILD_EXIT_CODE -ne 0 ]; then
+            echo "Error: Build failed for Backend/SOP/SOP.csproj. Please review the build errors above."
+            exit 1 # Fail the step if the build fails
+          fi
+          echo "Build successful. Now applying database migrations for Backend/SOP/SOP.csproj..."
+          dotnet ef database update --project Backend/SOP/SOP.csproj
+          if [ $? -eq 0 ]; then
+            echo "Database migrations applied successfully."
+          else
+            echo "Error: Failed to apply database migrations."
+            echo "Possible reasons: incorrect connection string, issues with migration files, or database access problems."
+            exit 1
+          fi
+
+      # Step 11: Build the solution
+      - name: Build the solution
+        run: |
+          echo "Building Backend/SOP/SOP.csproj in Release configuration..."
+          dotnet build --configuration Release Backend/SOP/SOP.csproj
+          if [ $? -eq 0 ]; then
+            echo "Backend/SOP/SOP.csproj built successfully."
+          else
+            echo "Error: Failed to build Backend/SOP/SOP.csproj."
+            exit 1
+          fi
+
+          echo "Building Backend/SOPTests/SOPTests.csproj in Release configuration..."
+          dotnet build --configuration Release Backend/SOPTests/SOPTests.csproj
+          if [ $? -eq 0 ]; then
+            echo "Backend/SOPTests/SOPTests.csproj built successfully."
+          else
+            echo "Error: Failed to build Backend/SOPTests/SOPTests.csproj."
+            exit 1
+          fi
+
+
+      # Step 12: Run unit tests
+      - name: Run unit tests
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "Files in Backend/SOPTests:"
+          ls -l Backend/SOPTests/
+          echo "Running tests from project: Backend/SOPTests/SOPTests.csproj"
+          /usr/share/dotnet/dotnet test Backend/SOPTests/SOPTests.csproj --configuration Release --no-build --logger "trx;LogFileName=test-results.trx"
+          TEST_EXIT_CODE=$?
+          echo "dotnet --info"
+          /usr/share/dotnet/dotnet --info
+          if [ $TEST_EXIT_CODE -ne 0 ]; then
+            echo "Unit tests failed with exit code $TEST_EXIT_CODE."
+            exit $TEST_EXIT_CODE
+          else
+            echo "Unit tests completed successfully."
+          fi
+      - name: Debug Test Failure
+        if: failure()
+        run: |
+          echo "Test run failed. Here's some debugging info:"
+          echo "Current directory: $(pwd)"
+          ls -l Backend/SOPTests/
+          /usr/share/dotnet/dotnet --info
+          cat Backend/SOPTests/SOPTests.csproj # Output the project file
+          echo "Environment variables:"
+          printenv
+          echo "Test Assemblies:"
+          find Backend/SOPTests/bin -name "*.dll"
+
+      # Step 13: Upload test results
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results.trx
+
+  build-angular:
+    name: Build Angular App
+    runs-on: ubuntu-latest
+    needs: build-and-test
+
+    steps:
+    - name: Checkout the code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20.18.0'
+
+    - name: Debug Angular Project Structure
+      run: |
+        echo "Current directory: $(pwd)"
+        echo "Repository structure:"
+        ls -R
+        echo "Checking for package-lock.json:"
+        find . -name package-lock.json
+        echo "Checking for package.json:"
+        find . -name package.json
+
+    - name: Check Angular CLI Version
+      working-directory: Frontend
+      run: |
+        echo "Checking locally installed Angular CLI version..."
+        npm list @angular/cli || echo "@angular/cli not installed locally."
+        echo "Checking global ng command availability..."
+        npx ng version || echo "ng command not found via npx."
+
+    - name: Clear npm cache
+      working-directory: Frontend
+      run: |
+        echo "Clearing npm cache forcefully..."
+        npm cache clean --force
+        echo "npm cache cleared."
+
+    - name: Cache npm dependencies
+      uses: actions/cache@v3
+      with:
+        path: Frontend/node_modules
+        key: npm-${{ runner.os }}-${{ hashFiles('Frontend/package-lock.json') }}
+        restore-keys: |
+          npm-${{ runner.os }}-
+
+    - name: Install dependencies
+      working-directory: Frontend
+      run: |
+        echo "Installing npm dependencies using 'npm ci'..."
+        npm ci
+        if [ $? -eq 0 ]; then
+          echo "npm dependencies installed successfully."
+        else
+          echo "Error: Failed to install npm dependencies. Check package.json and package-lock.json."
+          exit 1
+        fi
+
+    - name: Verify node_modules
+      working-directory: Frontend
+      run: |
+        echo "Verifying presence of @angular/cli in node_modules..."
+        ls -l node_modules/@angular/cli || echo "node_modules/@angular/cli not found. This might indicate an issue with 'npm ci'."
+        echo "Listing contents of node_modules (first level):"
+        ls -l node_modules
+
+    - name: Install Angular CLI globally
+      run: |
+        echo "Installing Angular CLI globally..."
+        npm install -g @angular/cli
+        if [ $? -eq 0 ]; then
+          echo "Angular CLI installed globally successfully."
+          echo "Verifying global Angular CLI version:"
+          ng version
+        else
+          echo "Error: Failed to install Angular CLI globally."
+          exit 1
+        fi
+
+    - name: Build Angular app
+      working-directory: Frontend
+      run: |
+        echo "Building Angular application for production..."
+        npm run build --prod
+        if [ $? -eq 0 ]; then
+          echo "Angular application built successfully."
+        else
+          echo "Error: Failed to build Angular application. Check build logs above for details."
+          exit 1
+        fi
+
+    - name: Upload Angular Build Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: angular-build
+        path: Frontend/dist/
+
+  run-web-api:
+    name: Run Web API
+    runs-on: ubuntu-latest
+    needs: build-and-test  # Ensures this job only runs after Build and Test job succeeds
+
+    steps:
+      # Step 1: Checkout the source code
+      - name: Checkout the code
+        uses: actions/checkout@v4
+
+      # Step 2: Setup .NET environment
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      # Step 3: Configure Local Settings (Connection String)
+      - name: Configure Local Settings
+        run: |
+          echo "Creating appsettings.Local.json for Web API run..."
+          echo "{
+            \"ConnectionStrings\": {
+              \"Default\": \"Server=localhost,1433;Database=TestDB;User Id=sa;Password=${{ secrets.SA_PASSWORD }};TrustServerCertificate=True;\"
+            }
+          }" > Backend/SOP/appsettings.Local.json
+          echo "appsettings.Local.json created. Content preview (sensitive data masked):"
+          sed 's/Password=.*$/Password=********;/' Backend/SOP/appsettings.Local.json
+
+      # Step 4: Run the Web API locally
+      - name: Run Web API
+        timeout-minutes: 2
+        run: |
+          echo "Starting the Web API in background..."
+          # Use exec to ensure the dotnet process replaces the current shell, making signal handling cleaner
+          dotnet run --project Backend/SOP/SOP.csproj &
+          WEB_API_PID=$!
+          echo "Web API started with PID: $WEB_API_PID"
+
+          echo "Giving the Web API 60 seconds to start and stabilize..."
+          sleep 60
+
+          echo "Checking if Web API process is still running..."
+          if ps -p $WEB_API_PID > /dev/null; then
+            echo "Web API process (PID: $WEB_API_PID) is running. Attempting graceful shutdown..."
+            kill -SIGTERM $WEB_API_PID
+            # Wait for a few seconds to allow graceful shutdown
+            echo "Waiting 5 seconds for graceful shutdown..."
+            sleep 5
+            if ps -p $WEB_API_PID > /dev/null; then
+              echo "Web API process (PID: $WEB_API_PID) is still running after SIGTERM. Forcing termination with SIGKILL..."
+              kill -SIGKILL $WEB_API_PID || echo "Error: Failed to force kill Web API process (PID: $WEB_API_PID)."
+              echo "Web API process force-killed."
+            else
+              echo "Web API process stopped gracefully."
+            fi
+          else
+            echo "Web API process (PID: $WEB_API_PID) is no longer running. It might have exited prematurely or failed to start."
+            echo "Reviewing logs for potential errors during startup."
+            # For direct `dotnet run &`, stderr might go to workflow log directly.
+            exit 1 # Fail the step if the API didn't stay running
+          fi

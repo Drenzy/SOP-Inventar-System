@@ -1,0 +1,98 @@
+<app-navbar></app-navbar>
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-6">
+      <h2>Bygninger</h2>
+
+      <!-- this is for the search bar -->
+      <div class="form-group">
+        <label for="searchBuilding">Søg Bygninger:</label>
+        <input type="text" class="form-control" id="searchBuilding" [(ngModel)]="searchBuildingTerm"
+          (input)="filterBuildings()" placeholder="Søg Bygninger" />
+      </div>
+
+      <!-- this is for the table -->
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Bygnings Navn</th>
+            <th>Addresse</th>
+            <th>Postnummer</th>
+            <th>Aktioner</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let building of filteredBuildings">
+            <td>{{ building.buildingName }}</td>
+            <td>{{ building.buildingAddress?.road }}</td>
+            <td>{{ building.zipCode }}</td>
+            <td>
+              <button class="btn btn-primary btn-sm" (click)="selectBuilding(building); $event.stopPropagation()">
+                Rediger
+              </button>
+              <!--the span ? if true and : if false-->
+              <span [title]="isDeleteDisabled(building.id) ? 'I denne bygning er der genstande' : ''">
+                <button *ngIf="currentUser?.role?.id === 1" class="btn btn-danger btn-sm"
+                  [disabled]="isDeleteDisabled(building.id)"
+                  (click)="confirmDelete(building.id); $event.stopPropagation()">
+                  Slet
+                </button>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- this is for the add building form -->
+      <button class="btn btn-success" (click)="showCreateForm = !showCreateForm">
+        Opret
+      </button>
+      <div *ngIf="showCreateForm">
+        <h3>Tilføj Bygning</h3>
+        <form (ngSubmit)="createBuilding()">
+          <div class="form-group">
+            <label for="buildingName">Bygnings Navn</label>
+            <input type="text" class="form-control" id="buildingName" [(ngModel)]="newBuilding.buildingName"
+              name="buildingName" required />
+          </div>
+          <div class="form-group">
+            <label for="zipCode">Postnummer</label>
+            <select class="form-control" id="zipCode" [(ngModel)]="newBuilding.zipCode" name="zipCode" required>
+              <option *ngFor="let zip of zipCodes" [value]="zip">
+                {{ zip }}
+              </option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-success">Tilføj</button>
+          <button type="button" class="btn btn-secondary" (click)="cancelCreateForm()">
+            Cancel
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- this is for the edit building form -->
+    <div class="col-md-6" *ngIf="selectedBuilding">
+      <h2>Rediger Bygning</h2>
+      <form (ngSubmit)="updateBuilding()">
+        <div class="form-group">
+          <label for="buildingName">Bygnings navn</label>
+          <input type="text" class="form-control" id="buildingName" [(ngModel)]="selectedBuilding.buildingName"
+            name="buildingName" required />
+        </div>
+        <div class="form-group">
+          <label for="zipCode">Postnummer</label>
+          <select class="form-control" id="zipCode" [(ngModel)]="selectedBuilding.zipCode" name="zipCode" required>
+            <option *ngFor="let zip of zipCodes" [value]="zip">
+              {{ zip }}
+            </option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-success">Opdater</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelEdit()">
+          Cancel
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

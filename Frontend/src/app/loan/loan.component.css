@@ -1,0 +1,53 @@
+.table-responsive {
+    overflow-x: auto; 
+    -webkit-overflow-scrolling: touch; 
+  }
+
+#tableResizeTest {
+    width: 100%; 
+    max-width: 100%; 
+    overflow-x: auto; 
+    margin-bottom: 20px; 
+    table-layout: fixed; 
+  }
+  
+  #tableResizeTest th, 
+  #tableResizeTest td {
+    word-wrap: break-word; 
+    text-align: left; 
+  }
+  
+  .container {
+    max-width: 1200px; 
+    margin: auto; 
+  }
+
+  #tableResizeTest button {
+    max-width: 100%; 
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    padding: 5px 10px; 
+    font-size: 14px; 
+  }
+
+  .idResizing{
+    width: 10%;
+  }
+
+  .modal-body,
+.modal-title {
+  color: black;
+}
+  
+  @media (max-width: 768px) {
+    #tableResizeTest {
+      font-size: 12px; 
+    }
+
+    #tableResizeTest button {
+        font-size: 12px; 
+        padding: 4px 8px; 
+      }
+  }
+  

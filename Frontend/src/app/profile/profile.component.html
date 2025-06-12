@@ -1,0 +1,141 @@
+<app-navbar></app-navbar>
+<!-- This is the div for all content on the page. -->
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-3">
+
+      <div class="card">
+        <img src="assets\pfp.jpg" class="card-img-top" alt="Profile Picture" />
+        <div class="card-body">
+          <h4 class="card-title">Navn: {{ user.name }}</h4>
+          <p class="card-text">Rolle: {{ user.userRole?.name }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- This is the div for the profile details. -->
+    <div class="col-md-9">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title">Profil Detaljer</h3>
+          <div>
+            Token valid for: {{ remainingTime / 60000 | number:'1.0-0' }} minutes
+          </div>
+          <form>
+            <div class="form-group">
+              <label for="name">Navn:</label>
+              <input type="text" class="form-control" id="name" [(ngModel)]="user.name" name="name" />
+            </div>
+            <div class="form-group">
+              <label for="role">Rolle:</label>
+              <input type="text" class="form-control" id="role" disabled [value]="user.userRole?.name" />
+            </div>
+            <div class="form-group">
+              <label for="email">Email:</label>
+              <input type="email" class="form-control" id="email" disabled [(ngModel)]="user.email" name="email" />
+            </div>
+            <div class="form-group">
+              <label for="password">Kode:</label>
+              <input type="password" class="form-control" id="password" [(ngModel)]="user.password" name="password"
+                (input)="checkPasswords()" />
+            </div>
+            <div class="form-group">
+              <label for="confirmPassword">Bekræft Kode:</label>
+              <input type="password" class="form-control" id="confirmPassword" [(ngModel)]="confirmPassword"
+                name="confirmPassword" (input)="checkPasswords()" />
+              <div *ngIf="passwordMismatch" class="error">
+                Adgangskoderne matcher ikke.
+              </div>
+              <div *ngIf="weakPassword" class="error">
+
+                Adgangskoden skal være mindst 15 tegn og indeholde store og små
+                bogstaver, tal og specialtegn.
+
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="twofactor_authentication">2 faktor login</label>
+              <input type="text" class="form-control" id="twofactor_authentication" disabled
+                [value]="user.twoFactorAuthentication" />
+            </div>
+
+            <!-- This is the div for the loaned material. -->
+            <div class="form-group">
+              <label for="loaned_material">Udlåndt inventar:</label>
+              <table class="table table-hover">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col">Fabrikant:</th>
+                    <th scope="col">Modelnavn:</th>
+                    <th scope="col">Udlånds Dato:</th>
+                    <th scope="col">Retur Dato:</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let loan of user.userLoans">
+                    <td scope="row">
+                      {{
+                      loan.userLoanItem?.userLoanItemItemGroup?.manufacturer
+                      }}
+                    </td>
+                    <td scope="row" class="click" (click)="
+                        navigateToItemDetails(
+                          loan.userLoanItem?.userLoanItemItemGroup?.id
+                        )
+                      ">
+                      {{ loan.userLoanItem?.userLoanItemItemGroup?.modelName }}
+                    </td>
+                    <td scope="row">
+                      {{ loan.loanDate | date : "yyyy-MM-dd" }}
+                    </td>
+                    <td scope="row">
+                      {{ loan.returnDate | date : "yyyy-MM-dd" }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <button type="button" class="btn btn-primary" (click)="saveChanges()">
+              Gem Ændringer
+            </button>
+            <button id="requestBtn" class="btn btn-primary" (click)="openRequestModal()">
+              Anmod Lån
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- This is the div for the request modal. -->
+<div class="modal" *ngIf="showRequestModal">
+  <div class="modal-content">
+    <span class="close" (click)="closeEditModal()">&times;</span>
+    <h2>Anmod Genstand</h2>
+    <form (ngSubmit)="createRequest()">
+      <div class="form-group">
+        <label for="editItemGroupId">Instruktør</label>
+        <select class="form-control" id="editItemGroupId" [(ngModel)]="request.recipientEmail" name="editItemGroupId"
+          required>
+          <option *ngFor="let inst of instuctors" [value]="inst.email">
+            {{ inst.email }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="requestSenderId">Gendstand</label>
+        <input type="text" class="form-control" id="requestItem" [(ngModel)]="request.item" name="requestItem" />
+      </div>
+      <div class="form-group">
+        <label for="requestSenderId">Anmodning besked </label>
+        <input type="text" class="form-control" id="requestMessage" [(ngModel)]="request.message"
+          name="requestMessage" />
+      </div>
+      <button type="submit" class="btn btn-primary">Send</button>
+      <button type="button" class="btn btn-secondary" (click)="closeEditModal()">
+        Cancel
+      </button>
+    </form>
+  </div>
+</div>

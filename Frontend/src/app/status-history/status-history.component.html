@@ -1,0 +1,67 @@
+<app-navbar></app-navbar>
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-6">
+      <h2>Status History</h2>
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Note</th>
+            <th>Aktioner</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let statusHistory of statusHistories">
+            <td>{{ statusHistory.item?.serialNumber }}</td>
+            <td>{{ statusHistory.status?.name }}</td>
+            <td>{{ statusHistory.statusUpdateDate | date }}</td>
+            <td>{{ statusHistory.note }}</td>
+            <td>
+              <button class="btn btn-primary btn-sm" (click)="selectStatusHistory(statusHistory)">
+                Rediger
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- For edit and create-->
+    <div class="col-md-6" *ngIf="isEditing || newStatusHistory.id === 0">
+      <h2>{{ isEditing ? "Opdater" : "Opret" }} Status History</h2>
+      <form (ngSubmit)="isEditing ? updateStatusHistory() : createStatusHistory()">
+        <div class="form-group">
+          <label for="item">Genstand</label>
+          <select class="form-control" id="item" [(ngModel)]="newStatusHistory.itemId" name="item" required>
+            <option *ngFor="let item of items" [value]="item.id">
+              {{ item.serialNumber }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="status">Status</label>
+          <select class="form-control" id="status" [(ngModel)]="newStatusHistory.statusId" name="status">
+            <option *ngFor="let status of statuss" [value]="status.id">
+              {{ status.name }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="note">Note</label>
+          <input type="text" class="form-control" id="note" [(ngModel)]="newStatusHistory.note" name="note" />
+        </div>
+
+        <button type="submit" class="btn btn-primary" [ngClass]="isEditing ? 'btn-primary' : 'btn-success'">
+          {{ isEditing ? "Opdater" : "Tilføj" }}
+        </button>
+
+        <button type="button" class="btn btn-secondary" (click)="cancelEdit()">
+          Annuller
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,76 @@
+<!--Adding navbar-->
+<app-navbar></app-navbar>
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-6">
+      <h2>Computerdele</h2>
+
+      <!--Search bar for computer parts-->
+      <div class="form-group">
+        <label for="searchRoom">Søg Computerdele:</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          id="searchRoom" 
+          [(ngModel)]="searchComputer_ComputerPart" 
+          (input)="filterCCP()">
+      </div>
+
+      <!--Table for computer parts-->
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Computer ID</th>
+            <th>Serienummer</th>
+            <th>Modelnummer</th>
+            <th *ngIf="currentUser?.role?.id === 1" >Handlinger</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!--Looping through the computer parts-->
+          <tr *ngFor="let computerComputerPart of filteredComputer_ComputerPart" class="clickable-row">
+            <td>{{ computerComputerPart.id }}</td>
+            <td>{{ computerComputerPart.computerId }}</td>
+            <td>{{ computerComputerPart.computerPart?.serialNumber }}</td>
+            <td>{{ computerComputerPart.computerPart?.modelNumber }}</td>
+            <td *ngIf="currentUser?.role?.id === 1" >
+              <!--Delete button-->
+              <button *ngIf="currentUser?.role?.id === 1" class="btn btn-danger" (click)="confirmDelete(computerComputerPart.id)">Slet</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!--Add available parts button-->
+      <button class="btn btn-primary" (click)="checkAvailableParts()">Opret</button>
+      <div *ngIf="showCreateForm">
+        <h3>Tilføj Computerdel</h3>
+        <!--Form for adding computer parts-->
+        <form (ngSubmit)="addComputerComputerPart()">
+          <!--Select computer and computer part, for loop computer-->
+          <div class="form-group">
+            <label for="computerId">Vælg Computer</label>
+            <select class="form-control" id="computerId" [(ngModel)]="computerComputerPart.computerId" name="computerId" required>
+              <option *ngFor="let computer of computers" [value]="computer.id">
+                {{ computer.id }} - {{ computer.item?.serialNumber }}
+              </option>
+            </select>
+          </div>
+          <!--Select computer and computer part, for loop computer part-->
+          <div class="form-group">
+            <label for="computerPartId">Vælg Computerdel</label>
+            <select class="form-control" id="computerPartId" [(ngModel)]="computerComputerPart.computerPartId" name="computerPartId" required>
+              <option *ngFor="let part of availableComputerParts" [value]="part.id">
+                {{ part.serialNumber }} - {{ part.modelNumber }} - {{ part.group?.partType?.partTypeName }}
+              </option>
+            </select>
+          </div>
+          <!--Submit and cancel button-->
+          <button type="submit" class="btn btn-success">Tilføj</button>
+          <button type="button" class="btn btn-secondary" (click)="cancelCreateForm()">Annuller</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
